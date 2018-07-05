@@ -1,0 +1,25 @@
+{
+  "name": "react-puppet",
+  "version": "1.0.0",
+  "description": "Fetch HTML and transform it into React components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gcazaciuc/react-puppet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gcazaciuc/react-puppet/issues"
+  },
+  "homepage": "https://github.com/gcazaciuc/react-puppet#readme",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "puppeteer": "^1.5.0",
+    "recast": "^0.15.1"
+  }
+}
