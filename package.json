@@ -21,5 +21,8 @@
     "minimist": "^1.2.0",
     "puppeteer": "^1.5.0",
     "recast": "^0.15.1"
+  },
+  "devDependencies": {
+    "jest": "^23.3.0"
   }
 }
