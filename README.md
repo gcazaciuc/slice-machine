@@ -5,7 +5,7 @@ Tired of manually copying HTML & CSS and transforming it into your favorite fram
 # Instalation
 
 ```sh
-npm install -g ui-slice-machine
+npm install -g slice-machine
 ```
 
 # Usage
