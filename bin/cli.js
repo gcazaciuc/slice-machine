@@ -1,7 +1,17 @@
 #!/usr/bin/env node
-const Crawler = require('../src/crawler/index');
-const url = 'https://www.contentful.com/';
+const Crawler = require('../src/Crawler');
+const Printer = require('../src/printers/index');
+const Writer = require('../src/writers/index');
+
 const appCrawler = new Crawler();
+const printer = new Printer();
+const writer = new Writer();
 (async () => {
-    appCrawler.crawl(url, 'ul');
+    appCrawler.readConfig();
+    console.log('Started to slice up the page...');
+    const slices = await appCrawler.crawl();
+    const cfg = appCrawler.getConfig();
+    const sliceCode = printer.print(slices, cfg);
+    writer.write(sliceCode, cfg);
+    console.log('Done!');
 })();

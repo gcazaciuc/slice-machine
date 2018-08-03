@@ -17,8 +17,8 @@ class Grabber {
             css: {}
         };
     }
-    async crawl(url, sel) {
-        const browser = await puppeteer.launch({ headless: false });
+    async grab(url, sel) {
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: 'networkidle2' });
         this.client = await page.target().createCDPSession();
@@ -38,10 +38,24 @@ class Grabber {
         await this.walkDOM(node, this.domTree);
         await this.client.detach();
         await browser.close();
-        return { css: this.domTree };
+        return this.domTree;
     }
     async walkDOM(node, currentDOMNode) {
+        if (node.nodeType === 3) {
+            // This is a text Node
+            const newDOMNode = {
+                id: 'text',
+                children: [],
+                type: 'text',
+                tagName: node.nodeValue,
+                attributes: [],
+                css: {}
+            };
+            currentDOMNode.children.push(newDOMNode);
+            return;
+        }
         if (node.nodeType !== 1) {
+            // It's NOT a text node and it's not a block node
             return;
         }
 
@@ -54,6 +68,7 @@ class Grabber {
         const newDOMNode = {
             id: nodeId,
             children: [],
+            type: 'regular',
             tagName,
             attributes,
             css

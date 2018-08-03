@@ -608,6 +608,10 @@ cssstyle@^1.0.0:
   dependencies:
     cssom "0.3.x"
 
+curriable@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/curriable/-/curriable-1.1.0.tgz#51817788748032244e73d24b98128a7b6d9c799d"
+
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
@@ -908,6 +912,10 @@ fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
 
+fast-stringify@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/fast-stringify/-/fast-stringify-1.0.4.tgz#7279707663aea3efbed1d9f5da36d7adbeadf5b6"
+
 fb-watchman@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/fb-watchman/-/fb-watchman-2.0.0.tgz#54e9abf7dfa2f26cd9b1636c588c1afc05de5d58"
@@ -962,6 +970,10 @@ find-up@^2.1.0:
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-2.1.0.tgz#45d1b7e506c717ddd482775a2b77920a3c0c57a7"
   dependencies:
     locate-path "^2.0.0"
+
+flow-parser@^0.78.0:
+  version "0.78.0"
+  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.78.0.tgz#4ec829a97fa68cff6e97691dfff7b6ddebbc187c"
 
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"
@@ -1154,6 +1166,14 @@ has@^1.0.1:
   resolved "https://registry.yarnpkg.com/has/-/has-1.0.3.tgz#722d7cbfc1f6aa8241f16dd814e011e1f41e8796"
   dependencies:
     function-bind "^1.1.1"
+
+hash-it@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/hash-it/-/hash-it-4.0.1.tgz#3d73f2c0659a96ff85dfff42ee9c74ed17dd15b0"
+  dependencies:
+    curriable "^1.1.0"
+    fast-stringify "^1.0.4"
+    json-prune "^1.1.0"
 
 home-or-tmp@^2.0.0:
   version "2.0.0"
@@ -1840,6 +1860,10 @@ jsdom@^11.5.1:
 jsesc@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-1.3.0.tgz#46c3fec8c1892b12b0833db9bc7622176dbab34b"
+
+json-prune@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/json-prune/-/json-prune-1.1.0.tgz#23e2fad108932b255050e3f1a70500c2b4aa30c7"
 
 json-schema-traverse@^0.3.0:
   version "0.3.1"

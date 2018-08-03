@@ -18,8 +18,11 @@
   },
   "homepage": "https://github.com/gcazaciuc/slice-machine#readme",
   "dependencies": {
+    "flow-parser": "^0.78.0",
+    "hash-it": "^4.0.1",
     "lodash": "^4.17.10",
     "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "puppeteer": "^1.5.0",
     "recast": "^0.15.1"
   },
