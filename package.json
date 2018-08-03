@@ -1,33 +1,36 @@
 {
-  "name": "slice-machine",
-  "version": "0.0.1",
-  "description": "Fetch HTML/CSS and transform it into components",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gcazaciuc/slice-machine.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/gcazaciuc/slice-machine/issues"
-  },
-  "homepage": "https://github.com/gcazaciuc/slice-machine#readme",
-  "dependencies": {
-    "flow-parser": "^0.78.0",
-    "hash-it": "^4.0.1",
-    "lodash": "^4.17.10",
-    "minimist": "^1.2.0",
-    "mkdirp": "^0.5.1",
-    "puppeteer": "^1.5.0",
-    "recast": "^0.15.1"
-  },
-  "devDependencies": {
-    "jest": "^23.3.0",
-    "prettier": "^1.14.0"
-  }
+    "name": "slice-machine",
+    "version": "0.0.1",
+    "description": "Fetch HTML/CSS and transform it into components",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gcazaciuc/slice-machine.git"
+    },
+    "keywords": [
+        "react",
+        "puppeteer"
+    ],
+    "author": "Cazaciuc Gabriel",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/gcazaciuc/slice-machine/issues"
+    },
+    "homepage": "https://github.com/gcazaciuc/slice-machine#readme",
+    "dependencies": {
+        "flow-parser": "^0.78.0",
+        "hash-it": "^4.0.1",
+        "lodash": "^4.17.10",
+        "minimist": "^1.2.0",
+        "mkdirp": "^0.5.1",
+        "puppeteer": "^1.5.0",
+        "recast": "^0.15.1"
+    },
+    "devDependencies": {
+        "jest": "^23.3.0",
+        "prettier": "^1.14.0"
+    }
 }
