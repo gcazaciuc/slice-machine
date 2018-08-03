@@ -1,6 +1,6 @@
 # Motivation
 
-Tired of manually copying HTML & CSS and transforming it into your favorite framework views and styled ? Meet `UI Slice Machine` a tool that allows you to slice up your existing HTML templates and styles and nice component based UI for your favorite framework
+Tired of manually copying HTML & CSS and transforming it into your favorite framework views and styled ? Meet `slice-machine` a tool that allows you to slice up your existing HTML templates and styles and nice component based UI for your favorite framework
 
 # Instalation
 
