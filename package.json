@@ -4,7 +4,7 @@
   "description": "Fetch HTML/CSS and transform it into components",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,11 +18,13 @@
   },
   "homepage": "https://github.com/gcazaciuc/slice-machine#readme",
   "dependencies": {
+    "lodash": "^4.17.10",
     "minimist": "^1.2.0",
     "puppeteer": "^1.5.0",
     "recast": "^0.15.1"
   },
   "devDependencies": {
-    "jest": "^23.3.0"
+    "jest": "^23.3.0",
+    "prettier": "^1.14.0"
   }
 }
