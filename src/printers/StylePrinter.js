@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const hash = require('hash-it').default;
 
 const getAttrValue = (node, attrToFind) => {
     const classAttributeIdx = node.attributes.findIndex(attr => attr === attrToFind);
