@@ -1,22 +1,22 @@
 {
-  "name": "react-puppet",
-  "version": "1.0.0",
-  "description": "Fetch HTML and transform it into React components",
+  "name": "slice-machine",
+  "version": "0.0.1",
+  "description": "Fetch HTML/CSS and transform it into components",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gcazaciuc/react-puppet.git"
+    "url": "git+https://github.com/gcazaciuc/slice-machine.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/gcazaciuc/react-puppet/issues"
+    "url": "https://github.com/gcazaciuc/slice-machine/issues"
   },
-  "homepage": "https://github.com/gcazaciuc/react-puppet#readme",
+  "homepage": "https://github.com/gcazaciuc/slice-machine#readme",
   "dependencies": {
     "minimist": "^1.2.0",
     "puppeteer": "^1.5.0",
