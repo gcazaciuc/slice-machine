@@ -3,6 +3,7 @@
     "version": "0.0.2",
     "description": "Fetch HTML/CSS and transform it into components",
     "main": "index.js",
+    "bin": "bin/cli.js",
     "scripts": {
         "test": "jest"
     },
