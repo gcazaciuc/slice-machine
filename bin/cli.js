@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const Crawler = require('../src/Crawler');
-const Printer = require('../src/printers/index');
-const Writer = require('../src/writers/index');
+const Printer = require('../src/printers');
+const Writer = require('../src/writers');
 
 const appCrawler = new Crawler();
 const printer = new Printer();

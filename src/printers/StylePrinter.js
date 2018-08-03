@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const hash = require('hash-it').default;
 
 const getAttrValue = (node, attrToFind) => {
     const classAttributeIdx = node.attributes.findIndex(attr => attr === attrToFind);
@@ -8,6 +7,10 @@ const getAttrValue = (node, attrToFind) => {
     }
     return null;
 };
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 class StylePrinter {
     constructor() {
         this.printNode = this.printNode.bind(this);
@@ -44,7 +47,7 @@ class StylePrinter {
     }
     toCSSInJS(css) {
         return Object.keys(css).reduce((acc, p) => {
-            acc[_.camelCase(p)] = css[p];
+            acc[_.camelCase(p)] = isNumeric(css[p]) ? parseFloat(css[p]) : css[p];
             return acc;
         }, {});
     }
