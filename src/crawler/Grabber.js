@@ -26,26 +26,30 @@ class Grabber {
         this.htmlCreator.setClient(this.client);
         await this.client.send('DOM.enable');
         await this.client.send('CSS.enable');
-        const doc = await this.client.send('DOM.getDocument');
+        const doc = await this.client.send('DOM.getDocument', { depth: -1 });
         const { nodeId } = await this.client.send('DOM.querySelector', {
             nodeId: doc.root.nodeId,
             selector: sel
         });
-        await this.walkDOM(nodeId, this.domTree);
-        await this.client.detach();
-        await browser.close();
-        return { css: this.domTree };
-    }
-    async walkDOM(nodeId, currentDOMNode) {
-        if (!nodeId) {
-            return;
-        }
-
         const { node } = await this.client.send('DOM.describeNode', {
             nodeId,
             depth: -1
         });
-        const { childNodeCount, children, localName: tagName, attributes } = node;
+        await this.walkDOM(node, this.domTree);
+        await this.client.detach();
+        await browser.close();
+        return { css: this.domTree };
+    }
+    async walkDOM(node, currentDOMNode) {
+        if (node.nodeType !== 1) {
+            return;
+        }
+
+        const { backendNodeId, childNodeCount, children, localName: tagName, attributes } = node;
+        const { nodeIds } = await this.client.send('DOM.pushNodesByBackendIdsToFrontend', {
+            backendNodeIds: [backendNodeId]
+        });
+        const [nodeId] = nodeIds;
         const css = await this.cssCreator.getCSS(nodeId);
         const newDOMNode = {
             id: nodeId,
@@ -60,7 +64,8 @@ class Grabber {
         // Walk recursively also the children
         if (childNodeCount > 0) {
             for (let child of Array.from(children)) {
-                await this.walkDOM(child.nodeId, newDOMNode);
+                // console.log('Has children...', child);
+                await this.walkDOM(child, newDOMNode);
             }
         }
     }
