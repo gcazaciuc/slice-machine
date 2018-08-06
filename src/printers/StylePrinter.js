@@ -2,9 +2,9 @@ const _ = require('lodash');
 const hash = require('hash-it').default;
 
 const getAttrValue = (node, attrToFind) => {
-    const classAttributeIdx = node.attributes.findIndex(attr => attr === attrToFind);
-    if (classAttributeIdx !== -1) {
-        return node.attributes[classAttributeIdx + 1];
+    const classAttributeIdx = node.attributes[attrToFind];
+    if (typeof classAttributeIdx !== 'undefined') {
+        return classAttributeIdx;
     }
     return null;
 };

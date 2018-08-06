@@ -25,6 +25,7 @@ class Crawler {
         for (let slice of this.config.slices) {
             console.log(`Processing slice ${slice.name}...`);
             const grabber = new Grabber();
+            grabber.setConfig(this.config);
             acc[slice.name] = await grabber.grab(slice.url, slice.sel);
         }
         return acc;

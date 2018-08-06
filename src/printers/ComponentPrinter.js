@@ -21,21 +21,28 @@ class ComponentPrinter {
         if (!node.tagName) {
             return childMarkup;
         }
-        let elAtributes = '';
-        for (let i = 0; i < node.attributes.length; i += 2) {
-            let attrName = node.attributes[i];
-            let attrVal = `'${node.attributes[i + 1]}'`;
-            if (attrName === 'class') {
-                attrName = 'className';
-                attrVal = `${stylesheetImport}.${node.cssClassName}`;
-            }
-            elAtributes += ` ${_.camelCase(attrName)}={${attrVal}}`;
-        }
+        const elAtributes = this.prepareAttributesForPrinting(node);
+
         if (childMarkup) {
             return `<${node.tagName} ${elAtributes}>${childMarkup.join('\n')}</${node.tagName}>`;
         } else {
             return `<${node.tagName} ${elAtributes} />`;
         }
+    }
+
+    prepareAttributesForPrinting(node) {
+        const attributes = Object.assign({}, node.attributes);
+        // Convert attribute names to React
+        if (attributes['class']) {
+            attributes['className'] = attributes['class'];
+            delete attributes['class'];
+        }
+        const elAtributes = Object.keys(attributes)
+            .map(attrName => {
+                return `${_.camelCase(attrName)}={${attributes[attrName]}}`;
+            })
+            .join(' ');
+        return elAtributes;
     }
 }
 module.exports = ComponentPrinter;

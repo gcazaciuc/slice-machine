@@ -8,6 +8,13 @@ module.exports = {
             codeFileName: 'PostComponent.tsx'
         }
     ],
+    ignoreCSSSources: [
+        'bootstrap.css',
+        'bootstrap-reboot.css',
+        'bootstrap-grid.css',
+        'fonts.min.css'
+    ],
+    keepCSSClasses: true,
     output: {
         path: 'dist'
     }

@@ -9,13 +9,19 @@ class Grabber {
         this.cssCreator = new CSSCreator();
         this.htmlCreator = new HTMLCreator();
         this.walkDOM = this.walkDOM.bind(this);
+        this.createAttributes = this.createAttributes.bind(this);
+        this.config = {};
         this.domTree = {
             id: 'root',
             children: [],
             tagName: '',
-            attributes: [],
+            attributes: {},
             css: {}
         };
+    }
+    setConfig(config) {
+        this.config = config;
+        this.cssCreator.setConfig(config);
     }
     async grab(url, sel) {
         const browser = await puppeteer.launch({ headless: true });
@@ -48,7 +54,7 @@ class Grabber {
                 children: [],
                 type: 'text',
                 tagName: node.nodeValue,
-                attributes: [],
+                attributes: {},
                 css: {}
             };
             currentDOMNode.children.push(newDOMNode);
@@ -70,7 +76,7 @@ class Grabber {
             children: [],
             type: 'regular',
             tagName,
-            attributes,
+            attributes: this.createAttributes(attributes),
             css
         };
 
@@ -83,6 +89,27 @@ class Grabber {
                 await this.walkDOM(child, newDOMNode);
             }
         }
+    }
+    createAttributes(attributes) {
+        const transformedAttributes = {};
+        for (let i = 0; i < attributes.length; i += 2) {
+            let attrName = attributes[i];
+            let attrVal = `'${attributes[i + 1]}'`;
+            if (attrName === 'class') {
+                const validClasses = attrVal
+                    .split(' ')
+                    .map(c => c.trim())
+                    .filter(c => c.length);
+
+                if (this.config.keepCSSClasses && validClasses.length) {
+                    attrVal = validClasses.join(' ');
+                    transformedAttributes[attrName] = attrVal;
+                }
+            } else {
+                transformedAttributes[attrName] = attrVal;
+            }
+        }
+        return transformedAttributes;
     }
 }
 module.exports = Grabber;
