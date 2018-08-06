@@ -21,7 +21,7 @@ class ComponentPrinter {
         if (!node.tagName) {
             return childMarkup;
         }
-        const elAtributes = this.prepareAttributesForPrinting(node);
+        const elAtributes = this.prepareAttributesForPrinting(node, stylesheetImport);
 
         if (childMarkup) {
             return `<${node.tagName} ${elAtributes}>${childMarkup.join('\n')}</${node.tagName}>`;
@@ -30,13 +30,22 @@ class ComponentPrinter {
         }
     }
 
-    prepareAttributesForPrinting(node) {
+    prepareAttributesForPrinting(node, stylesheetImport) {
         const attributes = Object.assign({}, node.attributes);
-        // Convert attribute names to React
-        if (attributes['class']) {
-            attributes['className'] = attributes['class'];
-            delete attributes['class'];
+        const clsAttribute = attributes['class'];
+        if (stylesheetImport && node.cssClassName) {
+            const generatedClass = `${stylesheetImport}.${node.cssClassName}`;
+            if (clsAttribute) {
+                attributes['class'] = ['`', clsAttribute, ' ${', generatedClass, '}`'].join('');
+            } else {
+                attributes['class'] = generatedClass;
+            }
         }
+        // Convert attribute names to React
+        attributes['className'] = attributes['class'] || '';
+
+        attributes['className'] = `${attributes['className']}`;
+        delete attributes['class'];
         const elAtributes = Object.keys(attributes)
             .map(attrName => {
                 return `${_.camelCase(attrName)}={${attributes[attrName]}}`;

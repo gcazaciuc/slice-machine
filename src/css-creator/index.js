@@ -67,8 +67,9 @@ class CSSCreator {
                 }
                 // Do not keep styles set by ignored stylesheets
                 const ss = this.stylesheetsTracker[rule.styleSheetId];
+                const ignoreCSSSources = this.config.ignoreCSSSources || [];
                 const isFromIgnoredStylesheet =
-                    ss && this.config.ignoreCSSSources.some(s => ss.sourceURL.indexOf(s) !== -1);
+                    ss && ignoreCSSSources.some(s => ss.sourceURL.indexOf(s) !== -1);
                 return !isFromIgnoredStylesheet;
             })
             .map(({ rule }) => rule);
