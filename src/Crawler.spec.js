@@ -1,7 +1,7 @@
 const Crawler = require('./Crawler');
 const testUrl = 'https://theme.crumina.net/html-olympus/02-ProfilePage.html';
 const selector = '.hentry.post';
-jest.setTimeout(10000);
+jest.setTimeout(15000);
 
 describe('Crawler spec', () => {
     it('Should be able to instantiate the crawler', async () => {
