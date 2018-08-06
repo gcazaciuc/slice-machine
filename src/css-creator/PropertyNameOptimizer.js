@@ -112,6 +112,42 @@ class PropertyNameOptimizer {
                 contractedProps[shorthand] = shorthandValue.join(' ');
             }
         }
+        // Do another pass and finalize the optimization
+        return this.postProcess(contractedProps);
+    }
+    postProcess(cssProperties) {
+        // Cleanup browser prefixes
+        const cleanCSS = this.deleteBrowserPrefixes(cssProperties);
+        const props = ['border-top', 'border-right', 'border-bottom', 'border-left'];
+        return this.collapseEqualValueProps(cleanCSS, props, 'border');
+    }
+
+    deleteBrowserPrefixes(cssProperties) {
+        return Object.keys(cssProperties).reduce((acc, p) => {
+            if (
+                p.indexOf('-webkit-') === -1 &&
+                p.indexOf('-moz-') === -1 &&
+                p.indexOf('-ms-') === -1 &&
+                p.indexOf('-o-') === -1
+            ) {
+                acc[p] = cssProperties[p];
+            }
+            return acc;
+        }, {});
+    }
+
+    collapseEqualValueProps(cssProperties, props, accProp) {
+        let contractedProps = Object.assign({}, cssProperties);
+        const firstPropVal = contractedProps[props[0]];
+        const hasEqualBorders = props.every(
+            p => !!firstPropVal && contractedProps[p] === firstPropVal
+        );
+        if (hasEqualBorders) {
+            contractedProps[accProp] = firstPropVal;
+            props.forEach(p => {
+                delete contractedProps[p];
+            });
+        }
         return contractedProps;
     }
 }

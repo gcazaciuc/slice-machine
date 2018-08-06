@@ -22,7 +22,7 @@ class Printer {
             const jsName = sliceConfig.codeFileName || `${sliceName}.ts`;
             const stylesheetName = sliceConfig.sheetName || `${sliceName}.css.ts`;
             const jsCode = prettier.format(
-                this.componentPrinter.print(sliceName, slice, stylesheetName),
+                this.componentPrinter.print(sliceName, slice, stylesheetName.split('.')[0]),
                 printOptions
             );
             sliceCode[sliceName] = {
