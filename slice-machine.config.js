@@ -5,7 +5,7 @@ module.exports = {
             sel: '.hentry.post',
             name: 'PostComponent',
             sheetName: 'PostComponentStyle.ts',
-            codeFileName: 'PostComponent.ts'
+            codeFileName: 'PostComponent.tsx'
         }
     ],
     output: {

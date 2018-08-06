@@ -32,8 +32,24 @@ const SHORTHAND_MAP = [
     ['border-width', 'border-style', 'border-color'],
     'outline',
     ['outline-width', 'outline-style', 'outline-color'],
+    'overflow',
+    ['overflow-x', 'overflow-y'],
     'transition',
-    ['transition-property', 'transition-duration', 'transition-timing-function', 'transition-delay']
+    [
+        'transition-property',
+        'transition-duration',
+        'transition-timing-function',
+        'transition-delay'
+    ],
+    'text-decoration',
+    ['text-decoration-line', 'text-decoration-color', 'text-decoration-style'],
+    'border-radius',
+    [
+        'border-top-left-radius',
+        'border-top-right-radius',
+        'border-bottom-right-radius',
+        'border-bottom-left-radius'
+    ]
 ];
 
 const DEFAULTS_MAP = {
@@ -60,11 +76,21 @@ const DEFAULTS_MAP = {
     'transition-timing-function': 'none',
     'outline-width': 'thin',
     'outline-style': 'dotted',
-    'outline-color': 'inherit'
+    'outline-color': 'inherit',
+    'oveflow-x': 'visible',
+    'oveflow-y': 'visible',
+    'text-decoration-line': 'none',
+    'text-decoration-color': 'currentcolor',
+    'text-decoration-style': 'solid',
+    'border-top-left-radius': 0,
+    'border-top-right-radius': 0,
+    'border-bottom-right-radius': 0,
+    'border-bottom-left-radius': 0
 };
 const SLASH_PROPS = ['line-height', 'background-size'];
+
 class PropertyNameOptimizer {
-    contract(cssProperties) {
+    optimize(cssProperties) {
         let contractedProps = Object.assign({}, cssProperties);
         for (let i = 0; i < SHORTHAND_MAP.length - 1; i += 2) {
             const shorthand = SHORTHAND_MAP[i];

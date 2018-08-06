@@ -2363,6 +2363,10 @@ parse-json@^2.2.0:
   dependencies:
     error-ex "^1.2.0"
 
+parse-rgb@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/parse-rgb/-/parse-rgb-1.0.0.tgz#b47b8fd26a4b6800d00ad07b08ada56440f95b37"
+
 parse5@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-4.0.0.tgz#6d78656e3da8d78b4ec0b906f7c08ef1dfe3f608"
@@ -2674,6 +2678,12 @@ resolve@1.1.7:
 ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
+
+rgb-to-hex@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/rgb-to-hex/-/rgb-to-hex-0.0.0.tgz#625234be046956899cbd2726b0f0b840bc7981d0"
+  dependencies:
+    parse-rgb "^1.0.0"
 
 right-align@^0.1.1:
   version "0.1.3"

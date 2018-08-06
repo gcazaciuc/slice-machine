@@ -4,7 +4,7 @@ jest.setTimeout(10000);
 describe('Grabber spec', () => {
     it('Should be able to contract full margin properties', async () => {
         const cssOptimizer = new PropertyNameOptimizer();
-        const css = cssOptimizer.contract({
+        const css = cssOptimizer.optimize({
             'margin-top': '10px',
             'margin-left': '20px',
             'margin-right': '30px',
@@ -15,7 +15,7 @@ describe('Grabber spec', () => {
 
     it('Should be able to contract full padding properties', async () => {
         const cssOptimizer = new PropertyNameOptimizer();
-        const css = cssOptimizer.contract({
+        const css = cssOptimizer.optimize({
             'padding-top': '10px',
             'padding-left': '20px',
             'padding-right': '30px',
@@ -26,7 +26,7 @@ describe('Grabber spec', () => {
 
     it('Should be able to contract border properties', async () => {
         const cssOptimizer = new PropertyNameOptimizer();
-        const css = cssOptimizer.contract({
+        const css = cssOptimizer.optimize({
             'border-width': '10px',
             'border-style': 'dotted',
             'border-color': 'blue'
@@ -36,7 +36,7 @@ describe('Grabber spec', () => {
 
     it('Should be able to contract border TOP properties', async () => {
         const cssOptimizer = new PropertyNameOptimizer();
-        const css = cssOptimizer.contract({
+        const css = cssOptimizer.optimize({
             'border-top-width': '10px',
             'border-top-style': 'dotted',
             'border-top-color': 'blue'
@@ -46,7 +46,7 @@ describe('Grabber spec', () => {
 
     it('Should be able to contract border RIGHT properties', async () => {
         const cssOptimizer = new PropertyNameOptimizer();
-        const css = cssOptimizer.contract({
+        const css = cssOptimizer.optimize({
             'border-right-width': '10px',
             'border-right-style': 'dotted',
             'border-right-color': 'blue'

@@ -1,4 +1,5 @@
 const PropertyNameOptimizer = require('./PropertyNameOptimizer');
+const PropertyValueOptimizer = require('./PropertyValueOptimizer');
 const _ = require('lodash');
 
 class CSSCreator {
@@ -6,6 +7,7 @@ class CSSCreator {
         this.css = {};
         this.client = null;
         this.cssPropOptimizer = new PropertyNameOptimizer();
+        this.cssValueOptimizer = new PropertyValueOptimizer();
     }
     setClient(client) {
         this.client = client;
@@ -21,8 +23,12 @@ class CSSCreator {
         }, {});
         const cssProperties = this.getStylesheetApplicableStyles(matchedCSSRules);
         const cssObject = cssProperties.filter(p => !!computedProps[p]);
-
-        return this.cssPropOptimizer.contract(_.pick(computedProps, cssObject));
+        const cssToOptimize = _.pick(computedProps, cssObject);
+        // Execute 2 passes on the values: One before property names are contracted
+        // and another after
+        return this.cssValueOptimizer.optimize(
+            this.cssPropOptimizer.optimize(this.cssValueOptimizer.optimize(cssToOptimize))
+        );
     }
     getStylesheetApplicableStyles(matchedCSSRules) {
         const rules = matchedCSSRules
