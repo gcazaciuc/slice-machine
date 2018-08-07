@@ -48,7 +48,16 @@ class ComponentPrinter {
         delete attributes['class'];
         const elAtributes = Object.keys(attributes)
             .map(attrName => {
-                return `${_.camelCase(attrName)}={${attributes[attrName]}}`;
+                let domAttrName = '';
+                if (attrName.indexOf('data-') === 0 || attrName.indexOf('aria-') === 0) {
+                    domAttrName = attrName;
+                } else {
+                    domAttrName = _.camelCase(attrName);
+                }
+                if (attrName === 'for') {
+                    domAttrName = 'htmlFor';
+                }
+                return `${domAttrName}={${attributes[attrName]}}`;
             })
             .join(' ');
         return elAtributes;
