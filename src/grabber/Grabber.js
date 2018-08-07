@@ -15,6 +15,7 @@ class Grabber {
             id: 'root',
             children: [],
             tagName: '',
+            type: 'regular',
             attributes: {},
             css: {}
         };
@@ -65,7 +66,14 @@ class Grabber {
             return;
         }
 
-        const { backendNodeId, childNodeCount, children, localName: tagName, attributes } = node;
+        const {
+            backendNodeId,
+            children,
+            pseudoType,
+            localName: tagName,
+            attributes,
+            pseudoElements
+        } = node;
         const { nodeIds } = await this.client.send('DOM.pushNodesByBackendIdsToFrontend', {
             backendNodeIds: [backendNodeId]
         });
@@ -74,7 +82,7 @@ class Grabber {
         const newDOMNode = {
             id: nodeId,
             children: [],
-            type: 'regular',
+            type: pseudoType ? pseudoType : 'regular',
             tagName,
             attributes: this.createAttributes(attributes),
             css
@@ -83,9 +91,14 @@ class Grabber {
         currentDOMNode.children.push(newDOMNode);
 
         // Walk recursively also the children
-        if (childNodeCount > 0) {
-            for (let child of Array.from(children)) {
-                // console.log('Has children...', child);
+        if (children && children.length > 0) {
+            for (let child of children) {
+                await this.walkDOM(child, newDOMNode);
+            }
+        }
+        // Go into the pseudo elements
+        if (pseudoElements && pseudoElements.length > 0) {
+            for (let child of pseudoElements) {
                 await this.walkDOM(child, newDOMNode);
             }
         }

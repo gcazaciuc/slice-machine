@@ -18,7 +18,7 @@ class ComponentPrinter {
         if (node.type === 'text') {
             return node.tagName;
         }
-        if (!node.tagName) {
+        if (!node.tagName || node.type !== 'regular') {
             return childMarkup;
         }
         const elAtributes = this.prepareAttributesForPrinting(node, stylesheetImport);

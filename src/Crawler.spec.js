@@ -30,12 +30,32 @@ describe('Crawler spec', () => {
             slices: [
                 {
                     url: `file://${fileToOpen}`,
+                    sel: '.content',
+                    name: 'PostComponent',
+                    sheetName: 'PostComponentStyle.ts'
+                }
+            ],
+            output: {
+                path: 'dist/'
+            }
+        };
+        crawler.setConfig(config);
+        const slices = await crawler.crawl();
+        expect(true).toBe(true);
+    });
+
+    it('Should grab the pseudo elements styling', async () => {
+        const crawler = new Crawler();
+        const fileToOpen = path.resolve('./src/fixtures/pseudo-elements.html');
+        const config = {
+            slices: [
+                {
+                    url: `file://${fileToOpen}`,
                     sel: '.container',
                     name: 'PostComponent',
                     sheetName: 'PostComponentStyle.ts'
                 }
             ],
-            ignoreCSSSources: ['bootstrap.min.css'],
             output: {
                 path: 'dist/'
             }

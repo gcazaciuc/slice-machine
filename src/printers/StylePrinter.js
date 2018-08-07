@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const hash = require('hash-it').default;
+const TypestylePrinter = require('./TypestylePrinter');
 
 const getAttrValue = (node, attrToFind) => {
     const classAttributeIdx = node.attributes[attrToFind];
@@ -14,38 +15,69 @@ function isNumeric(n) {
 
 class StylePrinter {
     constructor() {
-        this.printNode = this.printNode.bind(this);
+        this.printNode = this.getStyleTree.bind(this);
+        this.printStyleTree = this.printStyleTree.bind(this);
         this.classesRegistry = {};
         this.classNamesRegistry = {};
+        this.printRegistry = {};
+        this.cssFrameworkPrinter = new TypestylePrinter();
     }
     print(sliceName, domTree) {
-        const code = `
-            import { style } from 'typestyle';
-            ${this.printNode(domTree).join('\n')}
+        const styleTree = this.getStyleTree(domTree);
+        const cssCode = `
+            ${this.cssFrameworkPrinter.getImports()}
+            ${this.printStyleTree(styleTree).join('\n')}
         `;
-        return code;
+        return cssCode;
     }
-    printNode(node) {
+    printStyleTree(styleTree) {
+        const cssCode = _.flattenDeep(styleTree.children.map(this.printStyleTree));
+        if (
+            styleTree.type === 'regular' &&
+            styleTree.css &&
+            styleTree.cssClassName &&
+            !this.printRegistry[styleTree.cssClassName]
+        ) {
+            this.printRegistry[styleTree.cssClassName] = true;
+            cssCode.unshift(this.cssFrameworkPrinter.printCSSNode(styleTree));
+        }
+        return cssCode;
+    }
+    getStyleTree(node) {
         const { css } = node;
-        let code = [];
+        // Attach nested styles
+        node.children.forEach(child => {
+            const childStyle = this.getStyleTree(child);
+            if (childStyle.type !== 'regular' && childStyle.type !== 'text') {
+                css.pseudoElements = css.pseudoElements || {};
+                css.pseudoElements[`::${child.type}`] = childStyle.css;
+            }
+        });
+        const nodeClass = this.getNodeCSSClass(node);
+
+        node.cssClassName = nodeClass;
+        node.css = Object.assign({}, this.classNamesRegistry[nodeClass]);
+        return node;
+    }
+    getNodeCSSClass(node) {
+        const { css } = node;
+        let nodeClass = null;
+        let styleObj = {};
         if (Object.keys(css).length !== 0) {
             const styleHash = hash(css);
             if (!this.classesRegistry[styleHash]) {
-                const styleObj = JSON.stringify(this.toCSSInJS(css));
-                const nodeClass = this.getAvailableName(this.generateClassName(node));
-                code = [`export const ${nodeClass} = style(${styleObj})`];
+                styleObj = this.toCSSInJS(css);
+                nodeClass = this.getAvailableName(this.generateClassName(node));
+
                 this.classesRegistry[styleHash] = nodeClass;
-                this.classNamesRegistry[nodeClass] = true;
-                node.cssClassName = nodeClass;
+                this.classNamesRegistry[nodeClass] = styleObj;
             } else {
-                node.cssClassName = this.classesRegistry[styleHash];
+                nodeClass = this.classesRegistry[styleHash];
             }
         }
-        node.children.forEach(child => {
-            code = code.concat(this.printNode(child));
-        });
-        return code;
+        return nodeClass;
     }
+
     toCSSInJS(css) {
         return Object.keys(css).reduce((acc, p) => {
             acc[_.camelCase(p)] = isNumeric(css[p]) ? parseFloat(css[p]) : css[p];

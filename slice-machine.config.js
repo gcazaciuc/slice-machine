@@ -1,11 +1,12 @@
 module.exports = {
     slices: [
         {
-            url: 'https://theme.crumina.net/html-olympus/02-ProfilePage.html',
-            sel: '.hentry.post',
-            name: 'PostComponent',
-            sheetName: 'PostComponentStyle.ts',
-            codeFileName: 'PostComponent.tsx'
+            url:
+                'file:///home/gcazaciuc/open-source/exapp/docs/design-templates/src/Components-Forms.html',
+            sel: '.number-spinner',
+            name: 'NumberSpinner',
+            sheetName: 'NumberSpinnerStyle.ts',
+            codeFileName: 'NumberSpinner.tsx'
         }
     ],
     keepCSSClasses: true,
