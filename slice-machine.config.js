@@ -1,15 +1,15 @@
 module.exports = {
     slices: [
         {
-            url:
-                'file:///home/gcazaciuc/open-source/exapp/docs/design-templates/src/Components-Forms.html',
-            sel: '.number-spinner',
-            name: 'NumberSpinner',
-            sheetName: 'NumberSpinnerStyle.ts',
-            codeFileName: 'NumberSpinner.tsx'
+            url: 'https://theme.crumina.net/html-olympus/72-ForumsCreateTopic.html',
+            sel: '.ui-block',
+            name: 'Postcard',
+            sheetName: 'PostcardStyle.ts',
+            codeFileName: 'Postcard.tsx'
         }
     ],
-    keepCSSClasses: true,
+    removeCSSClasses: true,
+    removeDataAttributes: true,
     output: {
         path: 'dist'
     }

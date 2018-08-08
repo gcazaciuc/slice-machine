@@ -34,7 +34,32 @@ class CSSCreator {
     setConfig(config) {
         this.config = config;
     }
+    styleDiff(firstStyle, secondStyle) {
+        return Object.keys(secondStyle).reduce((newStyle, k) => {
+            if (!firstStyle[k] || firstStyle[k] !== secondStyle[k]) {
+                newStyle[k] = secondStyle[k];
+            }
+            return newStyle;
+        }, {});
+    }
     async getCSS(nodeId) {
+        const normalStateStyles = await this.cssSnapsot(nodeId);
+        const pseudoStates = ['hover'];
+        normalStateStyles.pseudoStates = {};
+        for (let state of pseudoStates) {
+            await this.client.send('CSS.forcePseudoState', {
+                nodeId,
+                forcedPseudoClasses: [state]
+            });
+            const stateStyle = await this.cssSnapsot(nodeId);
+            const stylesToSet = this.styleDiff(normalStateStyles, stateStyle);
+            if (stylesToSet && Object.keys(stylesToSet).length > 0) {
+                normalStateStyles.pseudoStates[`:${state}`] = stylesToSet;
+            }
+        }
+        return normalStateStyles;
+    }
+    async cssSnapsot(nodeId) {
         const { matchedCSSRules } = await this.client.send('CSS.getMatchedStylesForNode', {
             nodeId
         });

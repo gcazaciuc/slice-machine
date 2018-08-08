@@ -108,17 +108,9 @@ class Grabber {
         for (let i = 0; i < attributes.length; i += 2) {
             let attrName = attributes[i];
             let attrVal = `'${attributes[i + 1]}'`;
-            if (attrName === 'class') {
-                const validClasses = attrVal
-                    .split(' ')
-                    .map(c => c.trim())
-                    .filter(c => c.length);
-
-                if (this.config.keepCSSClasses && validClasses.length) {
-                    attrVal = validClasses.join(' ');
-                    transformedAttributes[attrName] = attrVal;
-                }
-            } else {
+            const shouldRemove =
+                attrName.indexOf('data-') === 0 && this.config.removeDataAttributes;
+            if (!shouldRemove) {
                 transformedAttributes[attrName] = attrVal;
             }
         }

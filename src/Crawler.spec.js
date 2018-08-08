@@ -1,68 +1,43 @@
 const Crawler = require('./Crawler');
+const Printer = require('../src/printers');
 const path = require('path');
-const testUrl = 'https://theme.crumina.net/html-olympus/02-ProfilePage.html';
-const selector = '.hentry.post';
 jest.setTimeout(15000);
+const createTest = async (fixture, selector) => {
+    const printer = new Printer();
+    const crawler = new Crawler();
+    const config = {
+        slices: [
+            {
+                url: `file://${path.resolve(fixture)}`,
+                sel: selector,
+                name: 'Component',
+                sheetName: 'ComponentStyle.ts'
+            }
+        ]
+    };
+    crawler.setConfig(config);
+    const slices = await crawler.crawl();
+    const cfg = crawler.getConfig();
+    const {
+        Component: { styles, jsCode }
+    } = printer.print(slices, cfg);
+    return { styles, jsCode };
+};
 
 describe('Crawler spec', () => {
-    it('Should be able to instantiate the crawler', async () => {
-        const crawler = new Crawler();
-        const config = {
-            slices: [
-                {
-                    url: testUrl,
-                    sel: selector,
-                    name: 'PostComponent',
-                    sheetName: 'PostComponentStyle.ts'
-                }
-            ]
-        };
-        crawler.setConfig(config);
-        const slices = await crawler.crawl();
-
-        expect(true).toBe(true);
+    it('Should be able to parse a simple HTML file and generate the styles & React comps', async () => {
+        const { styles, jsCode } = await createTest('./src/fixtures/simple.html', '.content');
+        expect(styles).toMatchSnapshot();
+        expect(jsCode).toMatchSnapshot();
     });
 
-    it.only('Should grab the styles with the exception of framework specific ones', async () => {
-        const crawler = new Crawler();
-        const fileToOpen = path.resolve('./src/fixtures/simple.html');
-        const config = {
-            slices: [
-                {
-                    url: `file://${fileToOpen}`,
-                    sel: '.content',
-                    name: 'PostComponent',
-                    sheetName: 'PostComponentStyle.ts'
-                }
-            ],
-            output: {
-                path: 'dist/'
-            }
-        };
-        crawler.setConfig(config);
-        const slices = await crawler.crawl();
-        expect(true).toBe(true);
-    });
-
-    it('Should grab the pseudo elements styling', async () => {
-        const crawler = new Crawler();
-        const fileToOpen = path.resolve('./src/fixtures/pseudo-elements.html');
-        const config = {
-            slices: [
-                {
-                    url: `file://${fileToOpen}`,
-                    sel: '.container',
-                    name: 'PostComponent',
-                    sheetName: 'PostComponentStyle.ts'
-                }
-            ],
-            output: {
-                path: 'dist/'
-            }
-        };
-        crawler.setConfig(config);
-        const slices = await crawler.crawl();
-        console.log(JSON.stringify(slices));
-        expect(true).toBe(true);
+    it.only('Should parse pseudo classes styles on elements', async () => {
+        const { styles, jsCode } = await createTest(
+            './src/fixtures/pseudo-classes.html',
+            '.content'
+        );
+        
+        expect(styles).toMatchSnapshot();
+        expect(jsCode).toMatchSnapshot();
     });
 });

@@ -1,16 +1,19 @@
 const _ = require('lodash');
+const ReactPrinter = require('./ReactPrinter');
 
 class ComponentPrinter {
+    constructor() {
+        this.jsFrameworkPrinter = new ReactPrinter();
+    }
     print(sliceName, domTree, stylesheetName) {
         const stylesheetImport = `${_.camelCase(sliceName)}Style`;
-        const code = `
-        import * as React from 'react';
-        import * as ${stylesheetImport} from './${stylesheetName}';
-        export class ${sliceName} extends React.Component {
-            render() {
-                return (${this.printNode(domTree, stylesheetImport)})
-            }
-        }`;
+        const renderBody = this.printNode(domTree, stylesheetImport);
+        const code = this.jsFrameworkPrinter.getComponent(
+            sliceName,
+            renderBody,
+            stylesheetImport,
+            stylesheetName
+        );
         return code;
     }
     printNode(node, stylesheetImport) {
@@ -46,7 +49,9 @@ class ComponentPrinter {
 
         attributes['className'] = `${attributes['className']}`;
         delete attributes['class'];
+        delete attributes['style'];
         const elAtributes = Object.keys(attributes)
+            .filter(attrName => !!attributes[attrName])
             .map(attrName => {
                 let domAttrName = '';
                 if (attrName.indexOf('data-') === 0 || attrName.indexOf('aria-') === 0) {
@@ -57,7 +62,11 @@ class ComponentPrinter {
                 if (attrName === 'for') {
                     domAttrName = 'htmlFor';
                 }
-                return `${domAttrName}={${attributes[attrName]}}`;
+                let sanitizedAttr = attributes[attrName].replace('\n', '');
+                if (attrName === 'href') {
+                    sanitizedAttr = "'#'";
+                }
+                return `${domAttrName}={${sanitizedAttr}}`;
             })
             .join(' ');
         return elAtributes;

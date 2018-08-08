@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Crawler spec Should be able to parse a simple HTML file and generate the styles & React comps 1`] = `
+"import { style } from 'typestyle';
+export const content = style({
+    width: '100px',
+    height: '100px',
+    background: '#0000FF'
+});
+"
+`;
+
+exports[`Crawler spec Should be able to parse a simple HTML file and generate the styles & React comps 2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={\`'content' \${componentStyle.content}\`}>
+                Test content
+            </p>
+        );
+    }
+}
+"
+`;
+
+exports[`Crawler spec Should parse pseudo classes styles on elements 1`] = `
+"import { style } from 'typestyle';
+export const content = style({
+    width: '100px',
+    height: '100px',
+    background: '#0000FF',
+    $nest: { '&:hover': { color: '#FFFFFF', background: '#008000' } }
+});
+"
+`;
+
+exports[`Crawler spec Should parse pseudo classes styles on elements 2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={\`'content' \${componentStyle.content}\`}>
+                Test content
+            </p>
+        );
+    }
+}
+"
+`;

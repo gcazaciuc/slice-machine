@@ -91,7 +91,7 @@ class StylePrinter {
         return this.getAvailableName(`${name}${nameCounter}`, nameCounter++);
     }
     generateClassName(node) {
-        const classAttr = getAttrValue(node, 'class');
+        const classAttr = getAttrValue(node, 'class') || getAttrValue(node, 'className');
         if (classAttr !== null) {
             const classNames = classAttr.split(' ');
             const longestClass = _.maxBy(classNames, cls => cls.length);
