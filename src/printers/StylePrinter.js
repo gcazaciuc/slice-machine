@@ -64,8 +64,7 @@ class StylePrinter {
                     css[p] = value.replace(rgbMatch[0], hexValue);
                 }
                 if (rgbaMatch) {
-                    hexValue = `#${rgbToHex(rgbaMatch[0])}`;
-                    css[p] = value.replace(rgbaMatch[0], hexValue);
+                    hexValue = rgbaMatch[0];
                 }
                 if (hexMatch) {
                     hexValue = hexMatch[0];
