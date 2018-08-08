@@ -61,7 +61,11 @@ class Grabber {
             currentDOMNode.children.push(newDOMNode);
             return;
         }
-        if (node.nodeType !== 1) {
+        if (
+            node.nodeType !== 1 ||
+            node.localName.toLowerCase() === 'script' ||
+            node.localName.toLowerCase() === 'link'
+        ) {
             // It's NOT a text node and it's not a block node
             return;
         }
