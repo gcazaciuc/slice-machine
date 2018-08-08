@@ -27,16 +27,14 @@ export class Component extends React.Component {
 
 exports[`Crawler spec Should parse pseudo classes styles on elements 1`] = `
 "import { style } from 'typestyle';
-const colors = {
-    purpleHeart: '#0000FF',
-    white: '#FFFFFF',
-    violetRed: '#FF579A'
-};
+const colors = { purpleHeart: '#0000FF', white: '#FFFFFF' };
 export const content = style({
     width: '100px',
     height: '100px',
     background: '#0000FF',
-    $nest: { '&:hover': { color: '#FFFFFF', background: '#FF579A' } }
+    $nest: {
+        '&:hover': { color: '#FFFFFF', background: 'rgba(255, 0, 255, 0.1)' }
+    }
 });
 "
 `;
