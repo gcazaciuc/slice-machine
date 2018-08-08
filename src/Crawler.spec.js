@@ -36,7 +36,7 @@ describe('Crawler spec', () => {
             './src/fixtures/pseudo-classes.html',
             '.content'
         );
-        
+
         expect(styles).toMatchSnapshot();
         expect(jsCode).toMatchSnapshot();
     });

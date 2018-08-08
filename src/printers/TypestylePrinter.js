@@ -18,6 +18,10 @@ class TypestylePrinter {
         cssToPrint.$nest = Object.assign({}, css.pseudoElements || {}, css.pseudoStates || {});
         delete cssToPrint.pseudoElements;
         delete cssToPrint.pseudoStates;
+        if (Object.keys(cssToPrint.$nest).length === 0) {
+            delete cssToPrint.$nest;
+            return cssToPrint;
+        }
         cssToPrint.$nest = Object.keys(cssToPrint.$nest).reduce((obj, key) => {
             obj[`&${key}`] = cssToPrint.$nest[key];
             return obj;

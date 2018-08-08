@@ -10,6 +10,7 @@ module.exports = {
     ],
     removeCSSClasses: true,
     removeDataAttributes: true,
+    extractColors: true,
     output: {
         path: 'dist'
     }

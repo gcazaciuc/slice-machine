@@ -1,6 +1,11 @@
 const _ = require('lodash');
 const hash = require('hash-it').default;
+const rgbToHex = require('rgb-to-hex');
+const colorNamer = require('color-namer');
 const TypestylePrinter = require('./TypestylePrinter');
+const rgbRegex = /rgb\(\d+\s*,\s*\d+\s*,\s*\d+\s*\)/gi;
+const rgbaRegex = /rgba\(\d+\s*,\s*\d+\s*,\s*\d+\s*\,\s*\d+\s*\)/gi;
+const hexRegex = /#([abcdef0123456789]){3,6}/gi;
 
 const getAttrValue = (node, attrToFind) => {
     const classAttributeIdx = node.attributes[attrToFind];
@@ -20,13 +25,16 @@ class StylePrinter {
         this.classesRegistry = {};
         this.classNamesRegistry = {};
         this.printRegistry = {};
+        this.colorPallete = {};
         this.cssFrameworkPrinter = new TypestylePrinter();
     }
     print(sliceName, domTree) {
         const styleTree = this.getStyleTree(domTree);
+        const cssDecl = this.printStyleTree(styleTree);
         const cssCode = `
             ${this.cssFrameworkPrinter.getImports()}
-            ${this.printStyleTree(styleTree).join('\n')}
+            const colors = ${JSON.stringify(this.colorPallete)};
+            ${cssDecl.join('\n')}
         `;
         return cssCode;
     }
@@ -43,6 +51,40 @@ class StylePrinter {
         }
         return cssCode;
     }
+    replaceColors(css) {
+        Object.keys(css).forEach(p => {
+            const value = css[p];
+            if (typeof value === 'string') {
+                const rgbMatch = value.match(rgbRegex);
+                const rgbaMatch = value.match(rgbaRegex);
+                const hexMatch = value.match(hexRegex);
+                let hexValue = null;
+                if (rgbMatch) {
+                    hexValue = `#${rgbToHex(rgbMatch[0])}`;
+                    css[p] = value.replace(rgbMatch[0], hexValue);
+                }
+                if (rgbaMatch) {
+                    hexValue = `#${rgbToHex(rgbaMatch[0])}`;
+                    css[p] = value.replace(rgbaMatch[0], hexValue);
+                }
+                if (hexMatch) {
+                    hexValue = hexMatch[0];
+                }
+                if (hexValue) {
+                    const color = colorNamer(hexValue).pantone[0];
+                    const colorName = _.camelCase(color.name);
+                    this.colorPallete[colorName] = hexValue;
+                }
+            }
+        });
+    }
+    processCSSColors(css) {
+        this.replaceColors(css);
+        Object.keys(css.pseudoStates || {}).forEach(k => this.replaceColors(css.pseudoStates[k]));
+        Object.keys(css.pseudoElements || {}).forEach(k =>
+            this.replaceColors(css.pseudoElements[k])
+        );
+    }
     getStyleTree(node) {
         const { css } = node;
         // Attach nested styles
@@ -53,6 +95,7 @@ class StylePrinter {
                 css.pseudoElements[`::${child.type}`] = childStyle.css;
             }
         });
+        this.processCSSColors(css);
         const nodeClass = this.getNodeCSSClass(node);
 
         node.cssClassName = nodeClass;

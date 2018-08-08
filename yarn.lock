@@ -489,6 +489,10 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
+chroma-js@^1.3.4:
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-1.3.7.tgz#38db1b46c99b002b77aa5e6b6744589388f28425"
+
 ci-info@^1.0.0:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-1.1.3.tgz#710193264bb05c77b8c90d02f5aaf22216a667b2"
@@ -542,6 +546,12 @@ color-convert@^1.9.0:
 color-name@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.1.tgz#4b1415304cf50028ea81643643bd82ea05803689"
+
+color-namer@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/color-namer/-/color-namer-1.3.0.tgz#b544e09bebd7133c008be8b8006e6f82eba4011d"
+  dependencies:
+    chroma-js "^1.3.4"
 
 combined-stream@1.0.6, combined-stream@~1.0.5:
   version "1.0.6"

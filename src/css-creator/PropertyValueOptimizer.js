@@ -1,5 +1,3 @@
-const rgbToHex = require('rgb-to-hex');
-
 class PropertyValueOptimizer {
     areAllDirectionalValuesEq(valArr) {
         return !valArr.some(v => v !== valArr[0]);
@@ -7,10 +5,6 @@ class PropertyValueOptimizer {
     optimize(cssProperties) {
         let optimizedProps = Object.assign({}, cssProperties);
         Object.keys(optimizedProps).forEach(p => {
-            // RGB to HEX conversion
-            if (optimizedProps[p].indexOf('rgb(') === 0) {
-                optimizedProps[p] = `#${rgbToHex(optimizedProps[p])}`;
-            }
             // Shorthand common values
             const individualValues = optimizedProps[p].split(' ');
             const propsToShorthand = ['margin', 'padding', 'border-radius', 'overflow'];
