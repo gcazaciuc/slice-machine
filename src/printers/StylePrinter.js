@@ -26,14 +26,21 @@ class StylePrinter {
         this.classNamesRegistry = {};
         this.printRegistry = {};
         this.colorPallete = {};
+        this.config = {};
         this.cssFrameworkPrinter = new TypestylePrinter();
+    }
+    setConfig(config) {
+        this.config = config;
     }
     print(sliceName, domTree) {
         const styleTree = this.getStyleTree(domTree);
         const cssDecl = this.printStyleTree(styleTree);
+        const palleteCode = this.config.extractColors
+            ? `const colors = ${JSON.stringify(this.colorPallete)}`
+            : '';
         const cssCode = `
             ${this.cssFrameworkPrinter.getImports()}
-            const colors = ${JSON.stringify(this.colorPallete)};
+            ${palleteCode}
             ${cssDecl.join('\n')}
         `;
         return cssCode;

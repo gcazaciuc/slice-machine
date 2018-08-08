@@ -29,8 +29,18 @@ module.exports = {
             name: 'PostComponent',
             sheetName: 'PostComponentStyle.ts',
             codeFileName: 'PostComponent.ts'
+        },
+        {
+            url: 'https://examplesite.com/',
+            sel: '.comment > .author',
+            name: 'Author',
+            sheetName: 'AuthorStyle.ts',
+            codeFileName: 'Author.ts'
         }
     ],
+    removeCSSClasses: true,
+    removeDataAttributes: true,
+    extractColors: true,
     output: {
         path: 'dist'
     }
@@ -60,6 +70,18 @@ How the file containing the CSS styles should be named
 -   codeFileName
 
 How the file containing the Javascript code for the slice should be named
+
+-   removeDataAttributes
+
+If `data-*` attributes should be removed from the captured DOM.
+
+-   removeCSSClasses
+
+If the original CSS classes that were set on the elements should be remvoed
+
+-   extractColors
+
+If the color pallete should be extracted and written at the beggining of the style file.
 
 ## Output configurations
 

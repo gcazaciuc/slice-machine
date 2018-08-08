@@ -13,7 +13,8 @@ const createTest = async (fixture, selector) => {
                 name: 'Component',
                 sheetName: 'ComponentStyle.ts'
             }
-        ]
+        ],
+        extractColors: true
     };
     crawler.setConfig(config);
     const slices = await crawler.crawl();
