@@ -32,9 +32,19 @@ describe('Crawler spec', () => {
         expect(jsCode).toMatchSnapshot();
     });
 
-    it.only('Should parse pseudo classes styles on elements', async () => {
+    it('Should parse pseudo classes styles on elements', async () => {
         const { styles, jsCode } = await createTest(
             './src/fixtures/pseudo-classes.html',
+            '.content'
+        );
+
+        expect(styles).toMatchSnapshot();
+        expect(jsCode).toMatchSnapshot();
+    });
+
+    it('Should parse inline styles on elements', async () => {
+        const { styles, jsCode } = await createTest(
+            './src/fixtures/inline-styles.html',
             '.content'
         );
 

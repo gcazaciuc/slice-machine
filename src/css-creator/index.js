@@ -60,15 +60,18 @@ class CSSCreator {
         return normalStateStyles;
     }
     async cssSnapsot(nodeId) {
-        const { matchedCSSRules } = await this.client.send('CSS.getMatchedStylesForNode', {
-            nodeId
-        });
+        const { matchedCSSRules, inlineStyle } = await this.client.send(
+            'CSS.getMatchedStylesForNode',
+            {
+                nodeId
+            }
+        );
         const { computedStyle } = await this.client.send('CSS.getComputedStyleForNode', { nodeId });
         const computedProps = computedStyle.reduce((acc, el) => {
             acc[el.name] = el.value;
             return acc;
         }, {});
-        const cssProperties = this.getStylesheetApplicableStyles(matchedCSSRules);
+        const cssProperties = this.getStylesheetApplicableStyles(matchedCSSRules, inlineStyle);
         const cssObject = cssProperties.filter(p => !!computedProps[p]);
         const cssToOptimize = _.pick(computedProps, cssObject);
         // Execute 2 passes on the values: One before property names are contracted
@@ -79,7 +82,7 @@ class CSSCreator {
 
         return css;
     }
-    getStylesheetApplicableStyles(matchedCSSRules) {
+    getStylesheetApplicableStyles(matchedCSSRules, inlineStyle) {
         const rules = matchedCSSRules
             .filter(({ rule }) => {
                 /* Stylesheet type: "injected" for stylesheets injected via extension, 
@@ -100,11 +103,12 @@ class CSSCreator {
             .map(({ rule }) => rule);
 
         const cssProperties = _.flattenDeep(
-            rules.map(({ style }) => {
-                return style.cssProperties;
-            })
+            rules
+                .map(({ style }) => {
+                    return style.cssProperties;
+                })
+                .concat(inlineStyle.cssProperties)
         ).map(p => p.name);
-
         return _.uniq(cssProperties);
     }
 }
