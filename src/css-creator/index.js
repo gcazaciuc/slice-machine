@@ -82,7 +82,7 @@ class CSSCreator {
 
         return css;
     }
-    getStylesheetApplicableStyles(matchedCSSRules, inlineStyle) {
+    getStylesheetApplicableStyles(matchedCSSRules, inlineStyle = {}) {
         const rules = matchedCSSRules
             .filter(({ rule }) => {
                 /* Stylesheet type: "injected" for stylesheets injected via extension, 
@@ -107,7 +107,7 @@ class CSSCreator {
                 .map(({ style }) => {
                     return style.cssProperties;
                 })
-                .concat(inlineStyle.cssProperties)
+                .concat(inlineStyle.cssProperties || [])
         ).map(p => p.name);
         return _.uniq(cssProperties);
     }

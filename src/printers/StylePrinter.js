@@ -32,7 +32,9 @@ class StylePrinter {
     setConfig(config) {
         this.config = config;
     }
-    print(sliceName, domTree) {
+    print(slices, sliceConfig) {
+        const sliceName = sliceConfig.name;
+        const domTree = slices[sliceName];
         const styleTree = this.getStyleTree(domTree);
         const cssDecl = this.printStyleTree(styleTree);
         const palleteCode = this.config.extractColors

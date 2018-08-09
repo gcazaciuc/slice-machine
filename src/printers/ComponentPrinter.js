@@ -4,8 +4,14 @@ const ReactPrinter = require('./ReactPrinter');
 class ComponentPrinter {
     constructor() {
         this.jsFrameworkPrinter = new ReactPrinter();
+        this.config = {};
     }
-    print(sliceName, domTree, stylesheetName) {
+    setConfig(config) {
+        this.config = config;
+    }
+    print(slices, sliceConfig, stylesheetName) {
+        const sliceName = sliceConfig.name;
+        const domTree = slices[sliceName];
         const stylesheetImport = `${_.camelCase(sliceName)}Style`;
         const renderBody = this.printNode(domTree, stylesheetImport);
         const code = this.jsFrameworkPrinter.getComponent(

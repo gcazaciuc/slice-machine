@@ -22,13 +22,21 @@ class Crawler {
     }
     async crawl() {
         const acc = {};
-        for (let slice of this.config.slices) {
+        await this.getSlices(this.config.slices, acc);
+        return acc;
+    }
+
+    async getSlices(slices, acc) {
+        for (let slice of slices) {
+            if (slice.slices && slice.slices.length > 0) {
+                // If the slice has child slices of it's own process those
+                await this.getSlices(slice.slices, acc);
+            }
             console.log(`Processing slice ${slice.name}...`);
             const grabber = new Grabber();
             grabber.setConfig(this.config);
             acc[slice.name] = await grabber.grab(slice.url, slice.sel);
         }
-        return acc;
     }
 }
 module.exports = Crawler;

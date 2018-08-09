@@ -2,11 +2,24 @@ const StylePrinter = require('./StylePrinter');
 const ComponentPrinter = require('./ComponentPrinter');
 const prettier = require('prettier');
 const _ = require('lodash');
+const hash = require('hash-it').default;
 
 class Printer {
     constructor() {
-        this.stylePrinter = new StylePrinter();
-        this.componentPrinter = new ComponentPrinter();
+        this.getSliceConfig = this.getSliceConfig.bind(this);
+    }
+    getSliceConfig(config, sliceName) {
+        for (let slice of config.slices) {
+            if (slice.name === sliceName) {
+                return slice;
+            }
+            if (slice.slices) {
+                const childSlice = this.getSliceConfig(slice, sliceName);
+                if (childSlice) {
+                    return childSlice;
+                }
+            }
+        }
     }
     print(slices, config = {}) {
         const printOptions = {
@@ -15,17 +28,22 @@ class Printer {
             tabWidth: 4,
             parser: 'flow'
         };
-        this.stylePrinter.setConfig(config);
         return Object.keys(slices).reduce((sliceCode, sliceName) => {
-            const slice = slices[sliceName];
-            const sliceConfig = config.slices.find(s => s.name === sliceName);
-            const styles = prettier.format(this.stylePrinter.print(sliceName, slice), printOptions);
-            const jsName = sliceConfig.codeFileName || `${sliceName}.ts`;
+            const stylePrinter = new StylePrinter();
+            const componentPrinter = new ComponentPrinter();
+            stylePrinter.setConfig(config);
+            componentPrinter.setConfig(config);
+            const sliceConfig = this.getSliceConfig(config, sliceName);
             const stylesheetName = sliceConfig.sheetName || `${sliceName}.css.ts`;
-            const jsCode = prettier.format(
-                this.componentPrinter.print(sliceName, slice, stylesheetName.split('.')[0]),
-                printOptions
+            const jsName = sliceConfig.codeFileName || `${sliceName}.ts`;
+            const unformattedCSSCode = stylePrinter.print(slices, sliceConfig);
+            const unformattedComponentCode = componentPrinter.print(
+                slices,
+                sliceConfig,
+                stylesheetName.split('.')[0]
             );
+            const jsCode = prettier.format(unformattedComponentCode, printOptions);
+            const styles = prettier.format(unformattedCSSCode, printOptions);
             sliceCode[sliceName] = {
                 styles,
                 jsCode,

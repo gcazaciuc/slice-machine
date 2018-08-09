@@ -1,0 +1,35 @@
+<html>
+
+<head>
+    <title>Grab the style without also grabing framework styles(eg Bootstrap)</title>
+    <style type="text/css">
+        .content {
+            background: blue;
+            width: 100px;
+            height: 100px;
+        }
+
+        .tab-item {
+            background: green;
+        }
+
+        .content-item {
+            background: rebeccapurple
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="tab-pane">
+            <ul>
+                <li class="tab-item">First tav</li>
+            </ul>
+        </div>
+        <div class="content-pane">
+            <div class="content-item">Tab content</div>
+        </div>
+    </div>
+</body>
+
+</html>

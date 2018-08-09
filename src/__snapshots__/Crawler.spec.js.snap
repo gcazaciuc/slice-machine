@@ -1,5 +1,93 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Crawler spec Should  1`] = `
+"import { style } from 'typestyle';
+const colors = { sunglow: '#FFD700' };
+export const content = style({ width: '500px', background: '#FFD700' });
+"
+`;
+
+exports[`Crawler spec Should  2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={\`'content' \${componentStyle.content}\`}>
+                Test content
+            </p>
+        );
+    }
+}
+"
+`;
+
+exports[`Crawler spec Should be  1`] = `
+"import { style } from 'typestyle';
+const colors = { sunglow: '#FFD700' };
+export const content = style({ width: '500px', background: '#FFD700' });
+"
+`;
+
+exports[`Crawler spec Should be  2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={\`'content' \${componentStyle.content}\`}>
+                Test content
+            </p>
+        );
+    }
+}
+"
+`;
+
+exports[`Crawler spec Should be able to construct hierarchi 1`] = `
+"import { style } from 'typestyle';
+const colors = { sunglow: '#FFD700' };
+export const content = style({ width: '500px', background: '#FFD700' });
+"
+`;
+
+exports[`Crawler spec Should be able to construct hierarchi 2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={\`'content' \${componentStyle.content}\`}>
+                Test content
+            </p>
+        );
+    }
+}
+"
+`;
+
+exports[`Crawler spec Should be able to construct hierarchical slices 1`] = `
+"import { style } from 'typestyle';
+const colors = { sunglow: '#FFD700' };
+export const content = style({ width: '500px', background: '#FFD700' });
+"
+`;
+
+exports[`Crawler spec Should be able to construct hierarchical slices 2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={\`'content' \${componentStyle.content}\`}>
+                Test content
+            </p>
+        );
+    }
+}
+"
+`;
+
 exports[`Crawler spec Should be able to parse a simple HTML file and generate the styles & React comps 1`] = `
 "import { style } from 'typestyle';
 const colors = { purpleHeart: '#0000FF', fern: '#008000' };
@@ -35,6 +123,28 @@ export const content = style({ width: '500px', background: '#FFD700' });
 `;
 
 exports[`Crawler spec Should parse inline styles on elements 2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={\`'content' \${componentStyle.content}\`}>
+                Test content
+            </p>
+        );
+    }
+}
+"
+`;
+
+exports[`Crawler spec Should parse inline styles on elements 3`] = `
+"import { style } from 'typestyle';
+const colors = { sunglow: '#FFD700' };
+export const content = style({ width: '500px', background: '#FFD700' });
+"
+`;
+
+exports[`Crawler spec Should parse inline styles on elements 4`] = `
 "import * as React from 'react';
 import * as componentStyle from './ComponentStyle';
 export class Component extends React.Component {
