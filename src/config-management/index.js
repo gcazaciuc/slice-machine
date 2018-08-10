@@ -11,6 +11,10 @@ class ConfigManager {
             language: 'javascript',
             name: '__root__',
             url: null,
+            componentMinNodes: 4,
+            keepClassNames: function(cfg) {
+                return clsAttribute => false;
+            },
             sheetFilename: function(cfg) {
                 return cfg.language === 'javascript'
                     ? `${cfg.name}Style.js`

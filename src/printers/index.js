@@ -9,10 +9,11 @@ class Printer {
         this.printSlice = this.printSlice.bind(this);
     }
     print(rootSlice) {
+        console.log('Optimizing component tree for printing');
         const treeOptimizer = new TreeOptimisation();
-        const inputSlices = rootSlice.slices;
-        const slices = treeOptimizer.optimize(inputSlices);
-        slices
+        treeOptimizer.optimize(rootSlice);
+        console.log('Printing components');
+        rootSlice.slices
             .filter(sliceConfig => sliceConfig.getMarkup().children.length > 0)
             .forEach(this.printSlice);
     }
@@ -26,7 +27,6 @@ class Printer {
         const stylePrinter = new StylePrinter();
         const componentPrinter = new ComponentPrinter();
         const stylesheetName = sliceConfig.sheetFilename;
-        const jsName = sliceConfig.codeFilename;
         const unformattedCSSCode = stylePrinter.print(sliceConfig);
         const unformattedComponentCode = componentPrinter.print(
             sliceConfig,

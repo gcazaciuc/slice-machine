@@ -1,8 +1,8 @@
 class ReactPrinter {
-    getComponent(componentName, renderBody, stylesheetImport, stylesheetName) {
+    getComponent(componentName, renderBody, importStatements) {
         return `
         import * as React from 'react';
-        import * as ${stylesheetImport} from './${stylesheetName}';
+        ${importStatements.join('\n')}
         export class ${componentName} extends React.Component {
             render() {
                 return (${renderBody})

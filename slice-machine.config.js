@@ -1,14 +1,26 @@
 module.exports = {
     language: 'typescript',
-    url: 'https://www.bobbibrown.com.mx/products/2339/makeup/lips',
+    url: 'https://theme.crumina.net/html-olympus/02-ProfilePage.html',
     slices: [
         {
-            sel: '.product-grid',
-            name: 'ProductGrid',
+            sel: '#newsfeed-items-grid',
+            name: 'NewsfeedGrid',
             slices: [
                 {
-                    sel: '.product-grid__item',
-                    name: 'ProductGridItem'
+                    name: 'SimplePost',
+                    sel: '#newsfeed-items-grid .ui-block:nth-child(1)'
+                },
+                {
+                    name: 'PostWithVideo',
+                    sel: '#newsfeed-items-grid .ui-block:nth-child(2)'
+                },
+                {
+                    name: 'PostWithReplies',
+                    sel: '#newsfeed-items-grid .ui-block:nth-child(3)'
+                },
+                {
+                    name: 'PostWithPhoto',
+                    sel: '#newsfeed-items-grid .ui-block:nth-child(4)'
                 }
             ]
         }

@@ -5,9 +5,16 @@ class SliceConfig {
         this.childConfigs = [];
         this.parentConfig = null;
         this.configObj = config || {};
+        this.customComponents = {};
         this.markup = null;
         this.cssCode = null;
         this.jsCode = null;
+    }
+    addCustomComponent(name) {
+        this.customComponents[name] = name;
+    }
+    getCustomComponents() {
+        return Object.keys(this.customComponents);
     }
     setCSSCode(code) {
         this.cssCode = code;
@@ -98,6 +105,12 @@ class SliceConfig {
     set removeDataAttributes(value) {
         this.configObj.removeDataAttributes = value;
     }
+    get keepClassNames() {
+        return this.config('keepClassNames');
+    }
+    set keepClassNames(value) {
+        this.configObj.keepClassNames = value;
+    }
     get extractColors() {
         return this.config('extractColors');
     }
@@ -109,6 +122,12 @@ class SliceConfig {
     }
     set ignoreCSSSources(value) {
         this.configObj.ignoreCSSSources = value;
+    }
+    get componentMinNodes() {
+        return this.config('componentMinNodes');
+    }
+    set componentMinNodes(value) {
+        this.configObj.componentMinNodes = value;
     }
     get slices() {
         return _.flattenDeep(

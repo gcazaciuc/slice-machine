@@ -7,6 +7,7 @@ class NameCreator {
         this.fromId = this.fromId.bind(this);
         this.fromName = this.fromName.bind(this);
         this.fromTag = this.fromTag.bind(this);
+        this.fromRole = this.fromRole.bind(this);
     }
     getAttrValue(node, attrToFind) {
         const classAttributeIdx = node.attributes[attrToFind];
@@ -46,6 +47,13 @@ class NameCreator {
         }
         return null;
     }
+    fromRole(node) {
+        const roleAttr = this.getAttrValue(node, 'role');
+        if (roleAttr !== null) {
+            return _.camelCase(roleAttr);
+        }
+        return null;
+    }
     fromTag(node, suffix = 'Cls') {
         return `${node.tagName}${suffix}`;
     }
@@ -57,6 +65,7 @@ class NameCreator {
             this.fromClassName,
             this.fromId,
             this.fromName,
+            this.fromRole,
             node => this.fromTag(node, 'Cls')
         ]);
         return nameStrategy(node);
@@ -66,9 +75,10 @@ class NameCreator {
             this.fromClassName,
             this.fromId,
             this.fromName,
+            this.fromRole,
             node => this.fromTag(node, 'Component')
         ]);
-        return nameStrategy(node);
+        return _.upperFirst(nameStrategy(node));
     }
 }
 module.exports = new NameCreator();

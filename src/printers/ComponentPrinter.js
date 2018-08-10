@@ -9,24 +9,25 @@ class ComponentPrinter {
         const sliceName = sliceConfig.name;
         const domTree = sliceConfig.getMarkup();
         const stylesheetImport = `${_.camelCase(sliceName)}Style`;
-        const renderBody = this.printNode(domTree, stylesheetImport);
-        const code = this.jsFrameworkPrinter.getComponent(
-            sliceName,
-            renderBody,
-            stylesheetImport,
-            stylesheetName
-        );
+        const renderBody = this.printNode(domTree, sliceConfig, stylesheetImport);
+        const importStatements = [
+            `import * as ${stylesheetImport} from './${stylesheetName}';`
+        ].concat(sliceConfig.getCustomComponents().map(c => `import { ${c} } from './${c}';`));
+
+        const code = this.jsFrameworkPrinter.getComponent(sliceName, renderBody, importStatements);
         return code;
     }
-    printNode(node, stylesheetImport) {
-        const childMarkup = node.children.map(c => this.printNode(c, stylesheetImport));
+    printNode(node, sliceConfig, stylesheetImport) {
+        const childMarkup = node.children.map(c =>
+            this.printNode(c, sliceConfig, stylesheetImport)
+        );
         if (node.type === 'text') {
             return node.tagName;
         }
         if (!node.tagName || node.type !== 'regular') {
             return childMarkup;
         }
-        const elAtributes = this.prepareAttributesForPrinting(node, stylesheetImport);
+        const elAtributes = this.prepareAttributesForPrinting(node, sliceConfig, stylesheetImport);
 
         if (childMarkup) {
             return `<${node.tagName} ${elAtributes}>${childMarkup.join('\n')}</${node.tagName}>`;
@@ -35,12 +36,12 @@ class ComponentPrinter {
         }
     }
 
-    prepareAttributesForPrinting(node, stylesheetImport) {
+    prepareAttributesForPrinting(node, sliceConfig, stylesheetImport) {
         const attributes = Object.assign({}, node.attributes);
         const clsAttribute = attributes['class'];
         if (stylesheetImport && node.cssClassName) {
             const generatedClass = `${stylesheetImport}.${node.cssClassName}`;
-            if (clsAttribute) {
+            if (clsAttribute && sliceConfig.keepClassNames(clsAttribute)) {
                 attributes['class'] = ['`', clsAttribute, ' ${', generatedClass, '}`'].join('');
             } else {
                 attributes['class'] = generatedClass;
