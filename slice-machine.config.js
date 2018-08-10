@@ -1,17 +1,20 @@
 module.exports = {
+    language: 'typescript',
+    url: 'https://www.bobbibrown.com.mx/products/2339/makeup/lips',
     slices: [
         {
-            url: 'https://theme.crumina.net/html-olympus/72-ForumsCreateTopic.html',
-            sel: '.ui-block',
-            name: 'Postcard',
-            sheetName: 'PostcardStyle.ts',
-            codeFileName: 'Postcard.tsx'
+            sel: '.product-grid',
+            name: 'ProductGrid',
+            slices: [
+                {
+                    sel: '.product-grid__item',
+                    name: 'ProductGridItem'
+                }
+            ]
         }
     ],
     removeCSSClasses: true,
     removeDataAttributes: true,
     extractColors: true,
-    output: {
-        path: 'dist'
-    }
+    outputPath: 'dist'
 };

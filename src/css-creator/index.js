@@ -1,12 +1,12 @@
 const PropertyNameOptimizer = require('./PropertyNameOptimizer');
 const PropertyValueOptimizer = require('./PropertyValueOptimizer');
+const ConfigManager = require('../config-management');
 const _ = require('lodash');
 
 class CSSCreator {
     constructor() {
         this.css = {};
         this.stylesheetsTracker = {};
-        this.config = {};
         this.client = null;
         this.ignoredCSSSources = [];
         this.cssPropOptimizer = new PropertyNameOptimizer();
@@ -30,9 +30,6 @@ class CSSCreator {
     }
     getTrackedStyleshets() {
         return this.stylesheetsTracker;
-    }
-    setConfig(config) {
-        this.config = config;
     }
     styleDiff(firstStyle, secondStyle) {
         return Object.keys(secondStyle).reduce((newStyle, k) => {
@@ -95,7 +92,7 @@ class CSSCreator {
                 }
                 // Do not keep styles set by ignored stylesheets
                 const ss = this.stylesheetsTracker[rule.styleSheetId];
-                const ignoreCSSSources = this.config.ignoreCSSSources || [];
+                const ignoreCSSSources = ConfigManager.getConfig().ignoreCSSSources || [];
                 const isFromIgnoredStylesheet =
                     ss && ignoreCSSSources.some(s => ss.sourceURL.indexOf(s) !== -1);
                 return !isFromIgnoredStylesheet;

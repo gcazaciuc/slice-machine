@@ -3,17 +3,11 @@ const hash = require('hash-it').default;
 const rgbToHex = require('rgb-to-hex');
 const colorNamer = require('color-namer');
 const TypestylePrinter = require('./TypestylePrinter');
+const NameCreator = require('../name-creator');
 const rgbRegex = /rgb\(\d+\s*,\s*\d+\s*,\s*\d+\s*\)/gi;
 const rgbaRegex = /rgba\(\d+\s*,\s*\d+\s*,\s*\d+\s*\,\s*\d+\s*\)/gi;
 const hexRegex = /#([abcdef0123456789]){3,6}/gi;
 
-const getAttrValue = (node, attrToFind) => {
-    const classAttributeIdx = node.attributes[attrToFind];
-    if (typeof classAttributeIdx !== 'undefined') {
-        return classAttributeIdx;
-    }
-    return null;
-};
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
@@ -26,18 +20,16 @@ class StylePrinter {
         this.classNamesRegistry = {};
         this.printRegistry = {};
         this.colorPallete = {};
-        this.config = {};
         this.cssFrameworkPrinter = new TypestylePrinter();
     }
-    setConfig(config) {
-        this.config = config;
-    }
-    print(slices, sliceConfig) {
-        const sliceName = sliceConfig.name;
-        const domTree = slices[sliceName];
+    print(sliceConfig) {
+        const domTree = sliceConfig.getMarkup();
+        if (!domTree) {
+            return;
+        }
         const styleTree = this.getStyleTree(domTree);
         const cssDecl = this.printStyleTree(styleTree);
-        const palleteCode = this.config.extractColors
+        const palleteCode = sliceConfig.extractColors
             ? `const colors = ${JSON.stringify(this.colorPallete)}`
             : '';
         const cssCode = `
@@ -94,6 +86,10 @@ class StylePrinter {
         );
     }
     getStyleTree(node) {
+        if (node.isCustomTag) {
+            return node;
+        }
+
         const { css } = node;
         // Attach nested styles
         node.children.forEach(child => {
@@ -118,7 +114,7 @@ class StylePrinter {
             const styleHash = hash(css);
             if (!this.classesRegistry[styleHash]) {
                 styleObj = this.toCSSInJS(css);
-                nodeClass = this.getAvailableName(this.generateClassName(node));
+                nodeClass = NameCreator.getAvailableName(NameCreator.generateClassName(node));
 
                 this.classesRegistry[styleHash] = nodeClass;
                 this.classNamesRegistry[nodeClass] = styleObj;
@@ -134,32 +130,6 @@ class StylePrinter {
             acc[_.camelCase(p)] = isNumeric(css[p]) ? parseFloat(css[p]) : css[p];
             return acc;
         }, {});
-    }
-    getAvailableName(name, nameCounter = 0) {
-        if (!this.classNamesRegistry[name]) {
-            return name;
-        }
-        return this.getAvailableName(`${name}${nameCounter}`, nameCounter++);
-    }
-    generateClassName(node) {
-        const classAttr = getAttrValue(node, 'class') || getAttrValue(node, 'className');
-        if (classAttr !== null) {
-            const classNames = classAttr.split(' ');
-            const longestClass = _.maxBy(classNames, cls => cls.length);
-            if (longestClass.length) {
-                return _.camelCase(longestClass);
-            }
-        }
-        const idAttr = getAttrValue(node, 'id');
-        if (idAttr !== null) {
-            return _.camelCase(idAttr);
-        }
-
-        const nameAttr = getAttrValue(node, 'name');
-        if (nameAttr !== null) {
-            return _.camelCase(nameAttr);
-        }
-        return `${node.tagName}Cls`;
     }
 }
 module.exports = StylePrinter;

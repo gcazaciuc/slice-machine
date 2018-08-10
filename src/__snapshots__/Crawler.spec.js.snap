@@ -1,75 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Crawler spec Should  1`] = `
-"import { style } from 'typestyle';
-const colors = { sunglow: '#FFD700' };
-export const content = style({ width: '500px', background: '#FFD700' });
-"
-`;
-
-exports[`Crawler spec Should  2`] = `
-"import * as React from 'react';
-import * as componentStyle from './ComponentStyle';
-export class Component extends React.Component {
-    render() {
-        return (
-            <p className={\`'content' \${componentStyle.content}\`}>
-                Test content
-            </p>
-        );
-    }
-}
-"
-`;
-
-exports[`Crawler spec Should be  1`] = `
-"import { style } from 'typestyle';
-const colors = { sunglow: '#FFD700' };
-export const content = style({ width: '500px', background: '#FFD700' });
-"
-`;
-
-exports[`Crawler spec Should be  2`] = `
-"import * as React from 'react';
-import * as componentStyle from './ComponentStyle';
-export class Component extends React.Component {
-    render() {
-        return (
-            <p className={\`'content' \${componentStyle.content}\`}>
-                Test content
-            </p>
-        );
-    }
-}
-"
-`;
-
-exports[`Crawler spec Should be able to construct hierarchi 1`] = `
-"import { style } from 'typestyle';
-const colors = { sunglow: '#FFD700' };
-export const content = style({ width: '500px', background: '#FFD700' });
-"
-`;
-
-exports[`Crawler spec Should be able to construct hierarchi 2`] = `
-"import * as React from 'react';
-import * as componentStyle from './ComponentStyle';
-export class Component extends React.Component {
-    render() {
-        return (
-            <p className={\`'content' \${componentStyle.content}\`}>
-                Test content
-            </p>
-        );
-    }
-}
-"
-`;
-
 exports[`Crawler spec Should be able to construct hierarchical slices 1`] = `
 "import { style } from 'typestyle';
-const colors = { sunglow: '#FFD700' };
-export const content = style({ width: '500px', background: '#FFD700' });
+const colors = { purpleHeart: '#0000FF' };
+export const content = style({
+    width: '100px',
+    height: '100px',
+    background: '#0000FF'
+});
+export const tabPane = style({});
 "
 `;
 
@@ -79,9 +18,12 @@ import * as componentStyle from './ComponentStyle';
 export class Component extends React.Component {
     render() {
         return (
-            <p className={\`'content' \${componentStyle.content}\`}>
-                Test content
-            </p>
+            <div className={\`'content' \${componentStyle.content}\`}>
+                <TabPane className={\`'tab-pane' \${componentStyle.tabPane}\`} />
+                <ContentPane
+                    className={\`'content-pane' \${componentStyle.tabPane}\`}
+                />
+            </div>
         );
     }
 }

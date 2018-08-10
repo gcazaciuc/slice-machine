@@ -1,57 +1,41 @@
 const StylePrinter = require('./StylePrinter');
 const ComponentPrinter = require('./ComponentPrinter');
+const TreeOptimisation = require('../code-optimisation/TreeOptimisation');
 const prettier = require('prettier');
 const _ = require('lodash');
-const hash = require('hash-it').default;
 
 class Printer {
     constructor() {
-        this.getSliceConfig = this.getSliceConfig.bind(this);
+        this.printSlice = this.printSlice.bind(this);
     }
-    getSliceConfig(config, sliceName) {
-        for (let slice of config.slices) {
-            if (slice.name === sliceName) {
-                return slice;
-            }
-            if (slice.slices) {
-                const childSlice = this.getSliceConfig(slice, sliceName);
-                if (childSlice) {
-                    return childSlice;
-                }
-            }
-        }
+    print(rootSlice) {
+        const treeOptimizer = new TreeOptimisation();
+        const inputSlices = rootSlice.slices;
+        const slices = treeOptimizer.optimize(inputSlices);
+        slices
+            .filter(sliceConfig => sliceConfig.getMarkup().children.length > 0)
+            .forEach(this.printSlice);
     }
-    print(slices, config = {}) {
+    printSlice(sliceConfig) {
         const printOptions = {
             singleQuote: true,
             useTabs: false,
             tabWidth: 4,
-            parser: 'flow'
+            parser: sliceConfig.language === 'javascript' ? 'flow' : 'typescript'
         };
-        return Object.keys(slices).reduce((sliceCode, sliceName) => {
-            const stylePrinter = new StylePrinter();
-            const componentPrinter = new ComponentPrinter();
-            stylePrinter.setConfig(config);
-            componentPrinter.setConfig(config);
-            const sliceConfig = this.getSliceConfig(config, sliceName);
-            const stylesheetName = sliceConfig.sheetName || `${sliceName}.css.ts`;
-            const jsName = sliceConfig.codeFileName || `${sliceName}.ts`;
-            const unformattedCSSCode = stylePrinter.print(slices, sliceConfig);
-            const unformattedComponentCode = componentPrinter.print(
-                slices,
-                sliceConfig,
-                stylesheetName.split('.')[0]
-            );
-            const jsCode = prettier.format(unformattedComponentCode, printOptions);
-            const styles = prettier.format(unformattedCSSCode, printOptions);
-            sliceCode[sliceName] = {
-                styles,
-                jsCode,
-                stylesheetName,
-                jsName
-            };
-            return sliceCode;
-        }, {});
+        const stylePrinter = new StylePrinter();
+        const componentPrinter = new ComponentPrinter();
+        const stylesheetName = sliceConfig.sheetFilename;
+        const jsName = sliceConfig.codeFilename;
+        const unformattedCSSCode = stylePrinter.print(sliceConfig);
+        const unformattedComponentCode = componentPrinter.print(
+            sliceConfig,
+            stylesheetName.split('.')[0]
+        );
+        const jsCode = prettier.format(unformattedComponentCode, printOptions);
+        const styles = prettier.format(unformattedCSSCode, printOptions);
+        sliceConfig.setCSSCode(styles);
+        sliceConfig.setJSCode(jsCode);
     }
 }
 module.exports = Printer;

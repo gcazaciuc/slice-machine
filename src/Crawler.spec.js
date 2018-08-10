@@ -1,17 +1,20 @@
 const Crawler = require('./Crawler');
-const Printer = require('../src/printers');
+const Printer = require('./printers');
+const ConfigManager = require('./config-management');
+
 const path = require('path');
 jest.setTimeout(15000);
 const runTest = async (config, componentName = 'Component') => {
     const printer = new Printer();
     const crawler = new Crawler();
-    crawler.setConfig(config);
-    const slices = await crawler.crawl();
-    const cfg = crawler.getConfig();
-    const {
-        [componentName]: { styles, jsCode }
-    } = printer.print(slices, cfg);
-    return { styles, jsCode };
+    ConfigManager.setConfig(config);
+    const rootSlice = await crawler.crawl();
+    printer.print(rootSlice);
+    const code = rootSlice.slices.filter(slice => slice.name === componentName).map(slice => ({
+        styles: slice.cssCode,
+        jsCode: slice.jsCode
+    }));
+    return code[0];
 };
 const createTest = async (fixture, selector) => {
     const config = {
@@ -20,7 +23,7 @@ const createTest = async (fixture, selector) => {
                 url: `file://${path.resolve(fixture)}`,
                 sel: selector,
                 name: 'Component',
-                sheetName: 'ComponentStyle.ts'
+                sheetFilename: 'ComponentStyle.ts'
             }
         ],
         extractColors: true
@@ -54,7 +57,7 @@ describe('Crawler spec', () => {
         expect(styles).toMatchSnapshot();
         expect(jsCode).toMatchSnapshot();
     });
-    it('Should be able to construct hierarchical slices', async () => {
+    it.only('Should be able to construct hierarchical slices', async () => {
         const fixture = `file://${path.resolve('./src/fixtures/html-hierarchy.html')}`;
         const config = {
             slices: [
@@ -66,24 +69,24 @@ describe('Crawler spec', () => {
                             url: fixture,
                             sel: '.content-pane',
                             name: 'ContentPane',
-                            sheetName: 'ContentPaneStyle.ts',
+                            sheetFilename: 'ContentPaneStyle.ts',
                             codeFileName: 'ContentPane.ts'
                         },
                         {
                             url: fixture,
                             sel: '.tab-pane',
                             name: 'TabPane',
-                            sheetName: 'TabPaneStyle.ts',
+                            sheetFilename: 'TabPaneStyle.ts',
                             codeFileName: 'ContentPane.ts'
                         }
                     ],
                     name: 'Component',
-                    sheetName: 'ComponentStyle.ts'
+                    sheetFilename: 'ComponentStyle.ts'
                 }
             ],
             extractColors: true
         };
-        const { styles, jsCode } = await runTest(config, 'TabPane');
+        const { styles, jsCode } = await runTest(config, 'ContentPane');
 
         expect(styles).toMatchSnapshot();
         expect(jsCode).toMatchSnapshot();

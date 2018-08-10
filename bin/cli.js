@@ -2,16 +2,16 @@
 const Crawler = require('../src/Crawler');
 const Printer = require('../src/printers');
 const Writer = require('../src/writers');
+const ConfigManager = require('../src/config-management');
 
 const appCrawler = new Crawler();
 const printer = new Printer();
 const writer = new Writer();
 (async () => {
-    appCrawler.readConfig();
+    ConfigManager.readConfig();
     console.log('Started to slice up the page...');
-    const slices = await appCrawler.crawl();
-    const cfg = appCrawler.getConfig();
-    const sliceCode = printer.print(slices, cfg);
-    writer.write(sliceCode, cfg);
+    const rootSlice = await appCrawler.crawl();
+    printer.print(rootSlice);
+    writer.write(rootSlice);
     console.log('Done!');
 })();

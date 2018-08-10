@@ -3,17 +3,16 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 
 class CodeWriter {
-    write(slices, cfg) {
-        const output = cfg.output ? cfg.output.path : '.';
-        if (!fs.existsSync(path.resolve(output))) {
-            mkdirp(output);
-        }
-        console.log(`Writing results to ${path.resolve(output)}`);
-        Object.keys(slices).forEach(sliceName => {
-            const { styles, jsCode, stylesheetName, jsName } = slices[sliceName];
-            const outputStyle = path.join(output, stylesheetName);
-            const outputJS = path.join(output, jsName);
-            fs.writeFileSync(outputStyle, styles);
+    write(rootSlice) {
+        rootSlice.slices.forEach(sliceConfig => {
+            const output = sliceConfig.outputPath;
+            if (!fs.existsSync(path.resolve(output))) {
+                mkdirp(output);
+            }
+            const { cssCode, jsCode } = sliceConfig;
+            const outputStyle = path.join(output, sliceConfig.sheetFilename);
+            const outputJS = path.join(output, sliceConfig.codeFilename);
+            fs.writeFileSync(outputStyle, cssCode);
             fs.writeFileSync(outputJS, jsCode);
         });
     }
