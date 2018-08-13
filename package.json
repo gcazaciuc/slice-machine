@@ -1,6 +1,6 @@
 {
     "name": "slice-machine",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Fetch HTML/CSS and transform it into components",
     "main": "index.js",
     "bin": "bin/cli.js",
