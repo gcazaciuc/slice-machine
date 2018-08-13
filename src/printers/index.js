@@ -12,6 +12,7 @@ class Printer {
         console.log('Optimizing component tree for printing');
         const treeOptimizer = new TreeOptimisation();
         treeOptimizer.optimize(rootSlice);
+        treeOptimizer.applyOptimisations();
         console.log('Printing components');
         rootSlice.slices
             .filter(sliceConfig => sliceConfig.getMarkup().children.length > 0)

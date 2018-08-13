@@ -27,6 +27,7 @@ module.exports = {
     ],
     removeCSSClasses: true,
     removeDataAttributes: true,
+    componentMinNodes: 4,
     extractColors: true,
     outputPath: 'dist'
 };

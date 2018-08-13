@@ -57,36 +57,30 @@ describe('Crawler spec', () => {
         expect(styles).toMatchSnapshot();
         expect(jsCode).toMatchSnapshot();
     });
-    it.only('Should be able to construct hierarchical slices', async () => {
+    it('Should be able to construct hierarchical slices', async () => {
         const fixture = `file://${path.resolve('./src/fixtures/html-hierarchy.html')}`;
         const config = {
+            url: fixture,
             slices: [
                 {
-                    url: fixture,
                     sel: '.content',
+                    name: 'Component',
                     slices: [
                         {
-                            url: fixture,
                             sel: '.content-pane',
-                            name: 'ContentPane',
-                            sheetFilename: 'ContentPaneStyle.ts',
-                            codeFileName: 'ContentPane.ts'
+                            name: 'ContentPane'
                         },
                         {
-                            url: fixture,
                             sel: '.tab-pane',
-                            name: 'TabPane',
-                            sheetFilename: 'TabPaneStyle.ts',
-                            codeFileName: 'ContentPane.ts'
+                            name: 'TabPane'
                         }
-                    ],
-                    name: 'Component',
-                    sheetFilename: 'ComponentStyle.ts'
+                    ]
                 }
             ],
-            extractColors: true
+            extractColors: true,
+            componentMinNodes: 2
         };
-        const { styles, jsCode } = await runTest(config, 'ContentPane');
+        const { styles, jsCode } = await runTest(config, 'Component');
 
         expect(styles).toMatchSnapshot();
         expect(jsCode).toMatchSnapshot();

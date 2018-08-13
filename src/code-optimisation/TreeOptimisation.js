@@ -8,16 +8,36 @@ class TreeOptimisation {
         this.getNodeHash = this.getNodeHash.bind(this);
         this.recordNodeHash = this.recordNodeHash.bind(this);
         this.optimizeContent = this.optimizeContent.bind(this);
+        this.computeContentHashes = this.computeContentHashes.bind(this);
+        this.dedupeContent = this.dedupeContent.bind(this);
         this.optimize = this.optimize.bind(this);
         this.contentHashes = {};
         this.hashToComponentNames = {};
         this.slices = [];
+        this.changes = [];
     }
     optimize(rootSlice) {
         // Hash out the content of each slices
-        this.recordNodeHash(rootSlice, rootSlice.getMarkup());
+        this.computeContentHashes(rootSlice);
+        this.dedupeContent(rootSlice);
+    }
+    dedupeContent(rootSlice) {
         this.optimizeContent(rootSlice, rootSlice.getMarkup());
-        rootSlice.childConfigs.forEach(this.optimize);
+        rootSlice.childConfigs.forEach(this.dedupeContent);
+    }
+    computeContentHashes(rootSlice) {
+        this.recordNodeHash(rootSlice, rootSlice.getMarkup());
+        rootSlice.childConfigs.forEach(this.computeContentHashes);
+    }
+    applyOptimisations() {
+        this.changes.forEach(({ node, tagName, css }) => {
+            node.children = [];
+            node.tagName = tagName;
+            node.attributes = {};
+            node.css = css;
+            node.isCustomTag = true;
+        });
+        this.changes = [];
     }
     optimizeContent(sliceConfig, node) {
         if (!node) {
@@ -27,7 +47,6 @@ class TreeOptimisation {
         const existingNodeHash = this.contentHashes[nodeHash];
         if (
             existingNodeHash &&
-            existingNodeHash.node.id !== node.id &&
             node.id !== 'root' &&
             existingNodeHash.depth >= sliceConfig.componentMinNodes
         ) {
@@ -46,11 +65,11 @@ class TreeOptimisation {
                 newSliceConfig.setMarkup(Object.assign({}, node, { id: 'root' }));
             }
             sliceConfig.addCustomComponent(customComponentName);
-            node.children = [];
-            node.tagName = customComponentName;
-            node.attributes = {};
-            node.css = existingNodeHash.node.css;
-            node.isCustomTag = true;
+            this.changes.push({
+                node,
+                tagName: customComponentName,
+                css: existingNodeHash.node.css
+            });
             console.log('Creating new slice....');
         } else {
             node.children.forEach(c => this.optimizeContent(sliceConfig, c));
@@ -61,7 +80,7 @@ class TreeOptimisation {
             return;
         }
         const hash = this.getNodeHash(node);
-        const depth = this.getNodeDepth(node);
+        const depth = this.getNodeDepth(node) + 1;
         const name = slice.getMarkup() === node ? slice.name : null;
         if (name && !this.hashToComponentNames[hash]) {
             this.hashToComponentNames[hash] = name;
