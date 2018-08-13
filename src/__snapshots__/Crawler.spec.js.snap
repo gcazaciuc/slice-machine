@@ -91,3 +91,30 @@ export class Component extends React.Component {
 }
 "
 `;
+
+exports[`Crawler spec Should transform relative URLs to absolute 1`] = `
+"import { style } from 'typestyle';
+const colors = {};
+export const imgCls = style({});
+"
+`;
+
+exports[`Crawler spec Should transform relative URLs to absolute 2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return (
+            <p className={componentStyle.imgCls}>
+                <img
+                    src={
+                        'file:///home/gcazaciuc/slice-machine/src/fixtures/absolute-urls.html/img.jpg'
+                    }
+                    className={componentStyle.imgCls}
+                />
+            </p>
+        );
+    }
+}
+"
+`;

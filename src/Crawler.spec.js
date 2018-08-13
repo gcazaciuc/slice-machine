@@ -48,6 +48,16 @@ describe('Crawler spec', () => {
         expect(jsCode).toMatchSnapshot();
     });
 
+    it('Should transform relative URLs to absolute', async () => {
+        const { styles, jsCode } = await createTest(
+            './src/fixtures/absolute-urls.html',
+            '.content'
+        );
+        console.log(jsCode);
+        expect(styles).toMatchSnapshot();
+        expect(jsCode).toMatchSnapshot();
+    });
+
     it('Should parse inline styles on elements', async () => {
         const { styles, jsCode } = await createTest(
             './src/fixtures/inline-styles.html',

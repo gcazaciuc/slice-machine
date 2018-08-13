@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const _ = require('lodash');
+const urlJoin = require('url-join');
 const CSSCreator = require('../css-creator');
 const HTMLCreator = require('../html-creator');
 
@@ -101,11 +102,24 @@ class Grabber {
             }
         }
     }
+    convert(baseUrl, currentUrl) {
+        if (
+            !currentUrl ||
+            /^(https?|file|ftps?|mailto|javascript|data:image\/[^;]{2,9};):/i.test(currentUrl)
+        ) {
+            return currentUrl;
+        }
+        return urlJoin(baseUrl, currentUrl);
+    }
     createAttributes(attributes, sliceConfig) {
         const transformedAttributes = {};
         for (let i = 0; i < attributes.length; i += 2) {
             let attrName = attributes[i];
             let attrVal = `'${attributes[i + 1]}'`;
+            if (attrName === 'src' || attrName === 'href') {
+                attrVal = attrVal.replace(/['"]/gmi, '');
+                attrVal = `'${this.convert(sliceConfig.url, attrVal)}'`;
+            }
             const shouldRemove =
                 attrName.indexOf('data-') === 0 && sliceConfig.removeDataAttributes;
             if (!shouldRemove) {
