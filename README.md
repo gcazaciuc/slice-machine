@@ -22,28 +22,19 @@ This is a NodeJS module so you can import other modules and do whatever you want
 
 ```js
 module.exports = {
+    language: 'typescript',
+    url: 'http://awesome.site/url',
     slices: [
         {
-            url: 'https://examplesite.com/',
-            sel: '.post',
-            name: 'PostComponent',
-            sheetName: 'PostComponentStyle.ts',
-            codeFileName: 'PostComponent.ts'
-        },
-        {
-            url: 'https://examplesite.com/',
-            sel: '.comment > .author',
-            name: 'Author',
-            sheetName: 'AuthorStyle.ts',
-            codeFileName: 'Author.ts'
+            sel: '.content',
+            name: 'Content'
         }
     ],
     removeCSSClasses: true,
     removeDataAttributes: true,
+    componentMinNodes: 2,
     extractColors: true,
-    output: {
-        path: 'dist'
-    }
+    outputPath: 'dist'
 };
 ```
 
@@ -51,23 +42,23 @@ module.exports = {
 
 Each slice is defined by:
 
--   url
+-   url: string
 
-The URL to open in order to get the slice
+The URL to open in order to get the slice. If
 
--   sel
+-   sel: string
 
 A CSS selector, similar to what you would give to `document.querySelector` in order to get to the slice
 
--   name
+-   name: string
 
 A meaningfull, component name given to the slice
 
--   sheetName
+-   sheetFilename
 
-How the file containing the CSS styles should be named
+Optional parameter, determines how the file containing the CSS styles should be named
 
--   codeFileName
+-   codeFilename
 
 How the file containing the Javascript code for the slice should be named
 
@@ -85,7 +76,33 @@ If the color pallete should be extracted and written at the beggining of the sty
 
 ## Output configurations
 
-The styles & javascript code for all the files will be written to the directory specified
-in `output -> path` section of the config.
+outputPath - Defines where the components and styles should be written. Defaults to current directory( '.' )
 
-It defaults to `.` .
+## Multiple slices
+
+Each slices, can, in turn have sub-slices and so on. Each slices can be taken from a different URL.
+
+```js
+module.exports = {
+    language: 'typescript',
+    url: 'http://awesome.site/url',
+    slices: [
+        {
+            sel: '.content',
+            name: 'Content',
+            slices: [
+                {
+                    sel: '.subslice',
+                    name: 'ChildComponent'
+                }
+            ]
+        },
+        {
+            url: 'file://local-file',
+            sel: '.another-content',
+            name: 'SliceFromLocalHTML'
+        }
+    ],
+    outputPath: 'dist'
+};
+```

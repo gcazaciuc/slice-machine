@@ -2,7 +2,7 @@ const hash = require('hash-it').default;
 
 class Node {
     constructor(tagName, type) {
-        this.id = Node.currentId++;
+        this.id = ++Node.currentId;
         this.children = [];
         this.type = type || 'regular';
         this.tagName = tagName;
@@ -30,8 +30,11 @@ class Node {
         newNode.css = Object.assign({}, this.css);
         newNode.attributes = Object.assign({}, this.attributes);
         newNode.parentNode = this.parentNode;
-        newNode.id = Node.currentId++;
-        newNode.children = this.children.map(c => c.clone());
+        newNode.children = this.children.map(c => {
+            const childClone = c.clone();
+            childClone.parentNode = newNode;
+            return childClone;
+        });
         return newNode;
     }
     firstRegularNode() {

@@ -1,25 +1,26 @@
 const NameCreator = require('../name-creator');
 
 class NodeDiff {
-    constructor(recordChangeCallback) {
+    constructor(rootNode, recordChangeCallback) {
         this.recordChangeCallback = recordChangeCallback;
+        this.rootNode = rootNode;
     }
     recordChanges(oldNode, replacementNode, attr) {
         const propName = NameCreator.generatePropName(replacementNode, attr);
         this.recordChangeCallback({
             type: 'attribute.set',
             data: {
-                node: replacementNode.firstRegularNode(),
+                node: replacementNode,
                 attr,
-                value: `props.${propName}`
+                value: `this.props.${propName}`
             }
         });
         this.recordChangeCallback({
             type: 'attribute.set',
             data: {
-                node: oldNode.firstRegularNode(),
+                node: this.rootNode,
                 attr: propName,
-                value: attr === 'text' ? oldNode.tagName : oldNode.attributes[attr]
+                value: attr === 'text' ? `'${oldNode.tagName}'` : oldNode.attributes[attr]
             }
         });
     }

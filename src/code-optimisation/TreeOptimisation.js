@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const NameCreator = require('../name-creator');
 const NodeDiff = require('./NodeDiff');
+const { Node } = require('../html-creator');
 const SliceConfig = require('../config-management/SliceConfig');
 
 class TreeOptimisation {
@@ -11,9 +12,8 @@ class TreeOptimisation {
         this.dedupeContent = this.dedupeContent.bind(this);
         this.optimize = this.optimize.bind(this);
         this.recordChange = this.recordChange.bind(this);
-        this.nodeDiffer = new NodeDiff(this.recordChange);
         this.contentHashes = {};
-        this.hashToComponentNames = {};
+        this.componentSlices = {};
         this.changes = [];
     }
     optimize(rootSlice) {
@@ -40,15 +40,18 @@ class TreeOptimisation {
     }
     setNodeProps(data) {
         const { node, attr, value } = data;
-        node.attributes[attr] = value;
+        if (attr === 'text') {
+            node.tagName = `{${value}}`;
+        } else {
+            node.attributes[attr] = value;
+        }
     }
     replaceNode(data) {
         const { originalNode, replacementNode } = data;
-        const { tagName, css } = replacementNode;
-        originalNode.children = [];
-        originalNode.tagName = tagName;
-        originalNode.css = css;
-        originalNode.isCustomTag = true;
+        const { id: originalId, parentNode: originalParent } = originalNode;
+        Object.assign(originalNode, replacementNode);
+        originalNode.id = originalId;
+        originalNode.parentNode = originalParent;
     }
     optimizeContent(sliceConfig, node) {
         if (!node) {
@@ -62,19 +65,19 @@ class TreeOptimisation {
             existingNodeHash.depth >= sliceConfig.componentMinNodes
         ) {
             // Generate a brand new name on the spot
-            const customComponent = existingNodeHash.node.clone();
-            customComponent.tagName = this.createCustomComponent(node, nodeHash, sliceConfig);
+            const customComponentSlice = this.createCustomComponent(node, nodeHash, sliceConfig);
+            const replacementNode = new Node(customComponentSlice.name, 'regular');
             const replacementData = {
                 originalNode: node,
-                replacementNode: customComponent
+                replacementNode
             };
-            this.nodeDiffer.diff(node, replacementData.replacementNode);
+            const nodeDiffer = new NodeDiff(replacementNode, this.recordChange);
+            nodeDiffer.diff(node, customComponentSlice.getMarkup());
             const change = {
                 type: 'node.replace',
                 data: replacementData
             };
             this.recordChange(change);
-            console.log('Creating new slice....');
         } else {
             node.children.forEach(c => this.optimizeContent(sliceConfig, c));
         }
@@ -85,21 +88,25 @@ class TreeOptimisation {
             : NameCreator.generateComponentName(node);
     }
     createCustomComponent(node, nodeHash, sliceConfig) {
-        const customComponentName =
-            this.hashToComponentNames[nodeHash] ||
-            this.getComponentName(node, nodeHash, sliceConfig);
-        this.hashToComponentNames[nodeHash] = customComponentName;
+        let customComponentName = '';
+        if (!this.componentSlices[nodeHash]) {
+            customComponentName = this.getComponentName(node, nodeHash, sliceConfig);
+            // Create a new slice
+            const newSliceConfig = new SliceConfig({
+                name: customComponentName
+            });
+            sliceConfig.addChildConfig(newSliceConfig);
+            newSliceConfig.setParentConfig(sliceConfig);
+            const newRoot = node.clone();
+            newRoot.parentNode = null;
+            newRoot.id = 'root';
+            newSliceConfig.setMarkup(newRoot);
+            this.componentSlices[nodeHash] = newSliceConfig;
+        } else {
+            customComponentName = this.componentSlices[nodeHash].name;
+        }
         sliceConfig.addCustomComponent(customComponentName);
-        // Create a new slice
-        const newSliceConfig = new SliceConfig({
-            name: customComponentName
-        });
-        sliceConfig.addChildConfig(newSliceConfig);
-        newSliceConfig.setParentConfig(sliceConfig);
-        const newRoot = node.clone();
-        newRoot.id = 'root';
-        newSliceConfig.setMarkup(newRoot);
-        return customComponentName;
+        return this.componentSlices[nodeHash];
     }
 
     recordChange(change) {

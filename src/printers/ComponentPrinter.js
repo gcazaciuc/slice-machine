@@ -66,7 +66,7 @@ class ComponentPrinter {
                     domAttrName = 'htmlFor';
                 }
                 let sanitizedAttr = attributes[attrName].replace('\n', '');
-                if (attrName === 'href') {
+                if (attrName === 'href' && attributes[attrName].length > 20) {
                     sanitizedAttr = "'#'";
                 }
                 return `${domAttrName}={${sanitizedAttr}}`;

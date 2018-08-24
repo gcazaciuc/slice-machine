@@ -29,7 +29,9 @@ class StylePrinter {
         }
         const styleTree = this.getStyleTree(domTree);
         const cssDecl = this.printStyleTree(styleTree);
-        const palleteCode = sliceConfig.extractColors
+        const canExtractColors =
+            sliceConfig.extractColors && Object.keys(this.colorPallete).length > 0;
+        const palleteCode = canExtractColors
             ? `const colors = ${JSON.stringify(this.colorPallete)}`
             : '';
         const cssCode = `
@@ -41,11 +43,13 @@ class StylePrinter {
     }
     printStyleTree(styleTree) {
         const cssCode = _.flattenDeep(styleTree.children.map(this.printStyleTree));
+        const canPrintCss =
+            !this.printRegistry[styleTree.cssClassName] && Object.keys(styleTree.css).length > 0;
         if (
             styleTree.type === 'regular' &&
             styleTree.css &&
             styleTree.cssClassName &&
-            !this.printRegistry[styleTree.cssClassName]
+            canPrintCss
         ) {
             this.printRegistry[styleTree.cssClassName] = true;
             cssCode.unshift(this.cssFrameworkPrinter.printCSSNode(styleTree));
@@ -127,7 +131,11 @@ class StylePrinter {
 
     toCSSInJS(css) {
         return Object.keys(css).reduce((acc, p) => {
-            acc[_.camelCase(p)] = isNumeric(css[p]) ? parseFloat(css[p]) : css[p];
+            if (p === 'pseudoElements' || p === 'pseudoStates') {
+                acc[p] = this.toCSSInJS(css[p]);
+            } else {
+                acc[_.camelCase(p)] = isNumeric(css[p]) ? parseFloat(css[p]) : css[p];
+            }
             return acc;
         }, {});
     }

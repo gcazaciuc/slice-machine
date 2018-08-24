@@ -59,7 +59,7 @@ export const content = style({
     width: '100px',
     height: '100px',
     background: '#0000FF',
-    $nest: { '&:hover': { background: '#008000' } }
+    $nest: { '&hover': { background: '#008000' } }
 });
 "
 `;
@@ -72,15 +72,21 @@ export class Component extends React.Component {
     render() {
         return (
             <div className={componentStyle.content}>
+                <TabItem />
                 <TabItem
-                    tabItemThirdClass={'tab-item'}
-                    className={'tab-item'}
+                    tabItemClass={'tab-item-second'}
+                    aClsHref={
+                        'file:///home/gcazaciuc/slice-machine/src/fixtures/markup-dedupe.html/xyz/2'
+                    }
+                    aClsText={'Test another content'}
                 />
                 <TabItem
-                    tabItemThirdClass={'tab-item-second'}
-                    className={'tab-item-second'}
+                    tabItemClass={'tab-item-third'}
+                    aClsHref={
+                        'file:///home/gcazaciuc/slice-machine/src/fixtures/markup-dedupe.html/#'
+                    }
+                    aClsText={'Third item            '}
                 />
-                <TabItem className={'tab-item-third'} />
             </div>
         );
     }

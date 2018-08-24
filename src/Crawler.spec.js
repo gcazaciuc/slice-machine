@@ -97,7 +97,7 @@ describe('Crawler spec', () => {
         expect(jsCode).toMatchSnapshot();
     });
 
-    it('Should dedupe similar markup and pass correct props to the child components created', async () => {
+    it.only('Should dedupe similar markup and pass correct props to the child components created', async () => {
         const { styles, jsCode } = await createTest(
             './src/fixtures/markup-dedupe.html',
             '.content'
