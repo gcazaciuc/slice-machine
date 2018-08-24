@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <title>Grab the style without also grabing framework styles(eg Bootstrap)</title>
+    <style type="text/css">
+        .content {
+            background: blue;
+            width: 100px;
+            height: 100px;
+        }
+
+        .content:hover {
+            background: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="tab-item">
+            <a href="/abc/1">Test content</a>
+        </div>
+        <div class="tab-item-second">
+            <a href="/xyz/2">Test another content</a>
+        </div>
+        <div class="tab-item-third">
+            <a href="#">T Third item
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

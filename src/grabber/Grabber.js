@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const _ = require('lodash');
 const urlJoin = require('url-join');
 const CSSCreator = require('../css-creator');
-const HTMLCreator = require('../html-creator');
+const { HTMLCreator, Node } = require('../html-creator');
 
 class Grabber {
     constructor() {
@@ -40,14 +40,8 @@ class Grabber {
     async walkDOM(node, sliceConfig, currentDOMNode) {
         if (node.nodeType === 3) {
             // This is a text Node
-            const newDOMNode = {
-                id: 'text',
-                children: [],
-                type: 'text',
-                tagName: node.nodeValue,
-                attributes: {},
-                css: {}
-            };
+            const newDOMNode = new Node(node.nodeValue, 'text');
+            newDOMNode.parentNode = currentDOMNode;
             currentDOMNode.children.push(newDOMNode);
             return;
         }
@@ -73,14 +67,11 @@ class Grabber {
         });
         const [nodeId] = nodeIds;
         const css = await this.cssCreator.getCSS(nodeId);
-        const newDOMNode = {
-            id: nodeId,
-            children: [],
-            type: pseudoType ? pseudoType : 'regular',
-            tagName,
-            attributes: this.createAttributes(attributes, sliceConfig),
-            css
-        };
+        const newDOMNode = new Node(tagName, pseudoType ? pseudoType : 'regular');
+        newDOMNode.attributes = this.createAttributes(attributes, sliceConfig);
+        newDOMNode.css = css;
+        newDOMNode.parentNode = currentDOMNode;
+
         if (currentDOMNode === null) {
             sliceConfig.setMarkup(newDOMNode);
             newDOMNode.id = 'root';
@@ -117,7 +108,7 @@ class Grabber {
             let attrName = attributes[i];
             let attrVal = `'${attributes[i + 1]}'`;
             if (attrName === 'src' || attrName === 'href') {
-                attrVal = attrVal.replace(/['"]/gmi, '');
+                attrVal = attrVal.replace(/['"]/gim, '');
                 attrVal = `'${this.convert(sliceConfig.url, attrVal)}'`;
             }
             const shouldRemove =

@@ -80,5 +80,16 @@ class NameCreator {
         ]);
         return _.upperFirst(nameStrategy(node));
     }
+    generatePropName(node, attrName) {
+        let referenceNode = node.firstRegularNode();
+        const nameStrategy = this.getNameStrategy(referenceNode, [
+            this.fromClassName,
+            this.fromId,
+            this.fromName,
+            this.fromRole,
+            referenceNode => this.fromTag(referenceNode)
+        ]);
+        return _.camelCase(`${nameStrategy(referenceNode)}-${attrName}`);
+    }
 }
 module.exports = new NameCreator();

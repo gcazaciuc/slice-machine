@@ -1,15 +1,4 @@
-class HTMLCreator {
-    constructor() {
-        this.html = {};
-        this.client = null;
-    }
-    setClient(client) {
-        this.client = client;
-    }
-    createHTML(node) {
-        console.log(node.localName);
-        this.html[node.localName] = node;
-    }
-}
+const Node = require('./Node');
+const HTMLCreator = require('./HTMLCreator');
 
-module.exports = HTMLCreator;
+module.exports = { HTMLCreator, Node };

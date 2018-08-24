@@ -26,7 +26,8 @@ const createTest = async (fixture, selector) => {
                 sheetFilename: 'ComponentStyle.ts'
             }
         ],
-        extractColors: true
+        extractColors: true,
+        componentMinNodes: 2
     };
     return await runTest(config);
 };
@@ -92,6 +93,16 @@ describe('Crawler spec', () => {
         };
         const { styles, jsCode } = await runTest(config, 'Component');
 
+        expect(styles).toMatchSnapshot();
+        expect(jsCode).toMatchSnapshot();
+    });
+
+    it('Should dedupe similar markup and pass correct props to the child components created', async () => {
+        const { styles, jsCode } = await createTest(
+            './src/fixtures/markup-dedupe.html',
+            '.content'
+        );
+        console.log(jsCode);
         expect(styles).toMatchSnapshot();
         expect(jsCode).toMatchSnapshot();
     });

@@ -2,12 +2,11 @@
 
 exports[`Crawler spec Should be able to construct hierarchical slices 1`] = `
 "import { style } from 'typestyle';
-const colors = { purpleHeart: '#0000FF', fern: '#008000' };
+const colors = { purpleHeart: '#0000FF' };
 export const content = style({
     width: '100px',
     height: '100px',
-    background: '#0000FF',
-    $nest: { '&:hover': { background: '#008000' } }
+    background: '#0000FF'
 });
 "
 `;
@@ -15,9 +14,16 @@ export const content = style({
 exports[`Crawler spec Should be able to construct hierarchical slices 2`] = `
 "import * as React from 'react';
 import * as componentStyle from './ComponentStyle';
+import { TabPane } from './TabPane';
+import { ContentPane } from './ContentPane';
 export class Component extends React.Component {
     render() {
-        return <p className={componentStyle.content}>Test content</p>;
+        return (
+            <div className={componentStyle.content}>
+                <TabPane />
+                <ContentPane />
+            </div>
+        );
     }
 }
 "
@@ -41,6 +47,42 @@ import * as componentStyle from './ComponentStyle';
 export class Component extends React.Component {
     render() {
         return <p className={componentStyle.content}>Test content</p>;
+    }
+}
+"
+`;
+
+exports[`Crawler spec Should dedupe similar markup and pass correct props to the child components created 1`] = `
+"import { style } from 'typestyle';
+const colors = { purpleHeart: '#0000FF', fern: '#008000' };
+export const content = style({
+    width: '100px',
+    height: '100px',
+    background: '#0000FF',
+    $nest: { '&:hover': { background: '#008000' } }
+});
+"
+`;
+
+exports[`Crawler spec Should dedupe similar markup and pass correct props to the child components created 2`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+import { TabItem } from './TabItem';
+export class Component extends React.Component {
+    render() {
+        return (
+            <div className={componentStyle.content}>
+                <TabItem
+                    tabItemThirdClass={'tab-item'}
+                    className={'tab-item'}
+                />
+                <TabItem
+                    tabItemThirdClass={'tab-item-second'}
+                    className={'tab-item-second'}
+                />
+                <TabItem className={'tab-item-third'} />
+            </div>
+        );
     }
 }
 "
@@ -114,6 +156,29 @@ export class Component extends React.Component {
                 />
             </p>
         );
+    }
+}
+"
+`;
+
+exports[`Crawler spec Should transform relative URLs to absolute 3`] = `
+"import { style } from 'typestyle';
+const colors = { purpleHeart: '#0000FF', fern: '#008000' };
+export const content = style({
+    width: '100px',
+    height: '100px',
+    background: '#0000FF',
+    $nest: { '&:hover': { background: '#008000' } }
+});
+"
+`;
+
+exports[`Crawler spec Should transform relative URLs to absolute 4`] = `
+"import * as React from 'react';
+import * as componentStyle from './ComponentStyle';
+export class Component extends React.Component {
+    render() {
+        return <p className={componentStyle.content}>Test content</p>;
     }
 }
 "
